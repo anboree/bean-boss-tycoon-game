@@ -1,0 +1,145 @@
+/* Set a better box-sizing and removed all default margins and padding */
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* Variables for colors */
+:root{
+    --background-color: #BBB5A2;
+    --secondary-background-color: #433226;
+    --text-color: #EDE9E0;
+    --text-hover-color: #D4AF37;
+    --button-color: #C97B43;
+    --button-hover-color: #E2A76F;
+}
+
+body{
+    background-color: var(--background-color);
+}
+
+/* Navbar */
+.navbar{
+    background-color: var(--secondary-background-color);
+    width: 75rem;
+    margin: 0 auto 0 auto;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 4px solid black;
+    border-left: 4px solid black;
+    border-right: 4px solid black;;
+}
+
+.nav-logo-container{
+    display: flex;
+    align-items: center;
+}
+
+#logo-text{
+    font-family: "Press Start 2P";
+    color: #EDE9E0;
+    font-size: 22px;
+    margin-left: 10px;
+}
+
+.nav-link{
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 17px;
+    margin-right: 15px;
+    font-family: "Nunito";
+    font-weight: bold;
+}
+.nav-link:hover{
+    color: var(--text-hover-color);
+}
+
+/* register.php and login.php */
+.back-btn{
+    position: absolute;
+    font-size: 24px;
+    left: 8px;
+    top: 3px;
+    font-family: "Nunito";
+    font-weight: bold;
+}
+
+.back-btn-link{
+    text-decoration: none;
+    color: black;
+}
+
+.container{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.register-login-heading{
+    text-align: center;
+    margin-bottom: 15px;
+    font-family: "Press Start 2P";
+    font-size: 32px;
+}
+
+.form{
+    width: 500px;
+    background-color: var(--secondary-background-color);
+    padding: 20px;
+    border: 4px solid black;
+    border-radius: 20px;
+    text-align: center;
+}
+
+.label{
+    display: block;
+    font-family: "Nunito";
+    font-size: 17px;
+    color: var(--text-color);
+    font-weight: bold;
+}
+
+.input{
+    width: 250px;
+    padding: 4px 3px;
+    border: 2px solid black;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    font-family: "Nunito";
+}
+
+#register-btn, #login-btn{
+    cursor: pointer;
+    display: block;
+    margin: 0 auto 0 auto;
+    margin-top: 10px;
+    width: 100px;
+    padding: 5px 0;
+    border: none;
+    border-radius: 10px;
+    font-family: "Nunito";
+    font-size: 14px;
+    font-weight: bold;
+    background-color: var(--button-color);
+}
+#register-btn:hover, #login-btn:hover{
+    background-color: var(--button-hover-color);
+}
+
+/* PHP form error message styling */
+.error-msg{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
