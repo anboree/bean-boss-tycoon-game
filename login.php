@@ -92,6 +92,8 @@
                 <input type="submit" name="login" class="btn" id="login-btn" value="Login">
             </form>
 
+            <p class="subform-redirect">Don't have an account?<a class="subform-redirect-link" href="register.php">Register</a></p>
+
             <!-- Form error output -->
             <?php
                 if(count($errors) > 0){
