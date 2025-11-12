@@ -135,6 +135,23 @@ body{
     background-color: var(--button-hover-color);
 }
 
+.subform-redirect{
+    width: 100%;
+    text-align: center;
+    font-family: "Press Start 2P";
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.subform-redirect-link{
+    text-decoration: none;
+    color: blue;
+    margin-left: 5px;
+}
+.subform-redirect-link:hover{
+    color: red;
+}
+
 /* PHP form error message styling */
 .error-msg{
     width: 100%;
@@ -142,4 +159,6 @@ body{
     flex-direction: column;
     align-items: center;
     margin-top: 10px;
+    font-family: "Nunito";
+    font-weight: bold;
 }
