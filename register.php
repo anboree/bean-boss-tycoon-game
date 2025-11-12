@@ -145,6 +145,8 @@
                 <input type="submit" name="register" class="btn" id="register-btn" value="Register">
             </form>
 
+            <p class="subform-redirect">Already have an account?<a class="subform-redirect-link" href="login.php">Login</a></p>
+
             <!-- Form error output -->
             <?php
                 if(count($errors) > 0){
