@@ -1,13 +1,17 @@
 <?php
     session_start();
 
+    if(isset($_SESSION["id"])){
+        header("Location: index.php");
+    }
+
     include("db/connection.php");
 
     // Empty array for storing form errors
     $errors = [];
 
     // CSRF Token creation if it doesn't exist yet
-    if(empty($_SESSION["csrf_token"])){
+    if(!isset($_SESSION["csrf_token"])){
         $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
     }
 
@@ -101,11 +105,14 @@
             $stmt = $conn->prepare("INSERT INTO registered_users (username, email, password, registration_date) VALUES (?, ?, ?, ?)");
             $stmt->bind_param("ssss", $username, $email, $hashed_password, $registration_date);
             $stmt->execute();
+            $_SESSION["id"] = $conn->insert_id;
             $stmt->close();
             $conn->close();
 
             // Unsetting the token after each successful registration
             unset($_SESSION["csrf_token"]);
+            
+            header("Location: index.php");
         }
     }
 
