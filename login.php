@@ -1,6 +1,10 @@
 <?php
     session_start();
 
+    if(isset($_SESSION["id"])){
+        header("Location: index.php");
+    }
+
     include("db/connection.php");
 
     // Empty array for storing form errors
@@ -45,7 +49,8 @@
                 if(password_verify($password, $hashed_password)){
                     // Unsetting the token after each successful login
                     unset($_SESSION["csrf_token"]);
-
+                    $_SESSION["id"] = $id;
+                    $_SESSION["username"] = $db_username;
                     $stmt->close();
                     $conn->close();
 
