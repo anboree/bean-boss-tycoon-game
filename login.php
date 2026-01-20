@@ -50,7 +50,6 @@
                     // Unsetting the token after each successful login
                     unset($_SESSION["csrf_token"]);
                     $_SESSION["id"] = $id;
-                    $_SESSION["username"] = $db_username;
                     $stmt->close();
                     $conn->close();
 
