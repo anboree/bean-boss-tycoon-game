@@ -5,7 +5,7 @@
         include("navbar-logged-in.html");
     }
     else{
-        include("navbar-logged-out.html");
+        header("Location: welcome.php");
     }
 ?>
 
