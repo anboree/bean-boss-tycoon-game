@@ -388,3 +388,13 @@ body{
 #welcome-login-link:hover{
     color: var(--button-hover-color);
 }
+
+/* user_account.php */
+.profile-container{
+    width: 75rem;
+    height: 85vh;
+    border: 4px solid black;
+    border-radius: 20px;
+    margin: 20px auto 0 auto;
+    background-color: var(--secondary-background-color);
+}
