@@ -6,7 +6,7 @@
         header("Location: index.php");
     }
 
-    include("navbar-logged-out.html");
+    include("navbar.php");
 ?>
 
 <!DOCTYPE html>
