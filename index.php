@@ -21,6 +21,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Press+Start+2P&display=swap" rel="stylesheet">
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/bean-boss-favicon.png">
+
     <!-- Link to CSS file -->
     <link rel="stylesheet" href="css/style.css">
 </head>
