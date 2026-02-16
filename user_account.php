@@ -48,7 +48,10 @@
     <span class="back-btn"><a class="back-btn-link" href="index.php">&#8617;</a></span>
     <div class="profile-container">
         <div class="profile-info">
-            <img src="assets/default-pfp.jpg" width="220px" style="border-radius: 200px;" alt="Profile Picture">
+            <img src="assets/default-pfp.jpg" width="220px" style="border-radius: 200px; margin-bottom: 10px;" alt="Profile Picture">
+
+            <hr class="user-account-hr">
+
             <p class="user-account-info" id="user-account-username"><?= htmlspecialchars($user["username"]) ?></p>
 
             <hr class="user-account-hr">
@@ -58,6 +61,7 @@
 
             <hr class="user-account-hr">
 
+            <a class="user-account-info user-account-info-link" href="edit_profile.php">Edit Profile</a>
             <a class="user-account-info user-account-info-link" href="user_account_settings.php">Account Settings</a>
             <a class="user-account-info user-account-info-link" href="logout.php">Logout</a>
         </div>
