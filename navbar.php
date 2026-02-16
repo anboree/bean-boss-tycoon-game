@@ -22,9 +22,14 @@
         <div class="nav-links">
             <?php if(isset($_SESSION["id"])): ?>
                 <!-- Logged-in user -->
-                <a href="user_account.php" class="nav-link">
-                    <img id="profile-picture" src="assets/default-pfp.jpg" alt="Profile">
-                </a>
+                <div class="leaderboard-pfp-div">
+                    <img src="assets/leaderboard-icon.png" id="leaderboard-icon" width="30" alt="Leaderboard Icon">
+                    <a href="leaderboard.php" class="nav-link leaderboard-link">Leaderboard</a>
+
+                    <a href="user_account.php" class="nav-link">
+                        <img id="profile-picture" src="assets/default-pfp.jpg" alt="Profile">
+                    </a>
+                </div>
             <?php else: ?>
                 <!-- Not logged-in user -->
                 <a href="login.php" class="nav-link">&#128273; Login</a>
