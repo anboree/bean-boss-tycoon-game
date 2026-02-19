@@ -1,2 +1,4 @@
 db/
 admin/
+/profile_pictures/*
+!/profile_pictures/default-pfp.jpg
