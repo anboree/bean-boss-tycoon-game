@@ -102,12 +102,46 @@
 
         // Sends data to DB with SQL Injection security/prevention if no errors
         if(count($errors) == 0){
-            $stmt = $conn->prepare("INSERT INTO registered_users (username, email, password, registration_date) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("ssss", $username, $email, $hashed_password, $registration_date);
-            $stmt->execute();
-            $_SESSION["id"] = $conn->insert_id;
-            $stmt->close();
-            $conn->close();
+           $conn->begin_transaction();
+
+            try{
+                // Insert user
+                $stmt = $conn->prepare("
+                    INSERT INTO registered_users (username, email, password, registration_date)
+                    VALUES (?, ?, ?, ?)
+                ");
+                $stmt->bind_param("ssss", $username, $email, $hashed_password, $registration_date);
+                $stmt->execute();
+
+                // Get the new user's ID
+                $newUserId = $conn->insert_id;
+                $stmt->close();
+
+                // Insert account details
+                $stmt = $conn->prepare("
+                    INSERT INTO user_account_details (user_id, level, xp)
+                    VALUES (?, 1, 0)
+                ");
+                $stmt->bind_param("i", $newUserId);
+                $stmt->execute();
+                $stmt->close();
+
+                // Commit both inserts
+                $conn->commit();
+
+                $_SESSION["id"] = $newUserId;
+
+                // Remove CSRF token after success
+                unset($_SESSION["csrf_token"]);
+
+                header("Location: index.php");
+                exit;
+            } 
+            catch(Exception $e){
+                // If anything fails, undo everything
+                $conn->rollback();
+                $errors["database"] = "Registration failed. Please try again.";
+            }
 
             // Unsetting the token after each successful registration
             unset($_SESSION["csrf_token"]);
