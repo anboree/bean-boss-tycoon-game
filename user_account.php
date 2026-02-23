@@ -11,6 +11,7 @@
     $stmt = $conn->prepare("
     SELECT 
         registered_users.username,
+        user_account_details.profile_picture,
         user_account_details.level,
         user_account_details.xp
     FROM registered_users
@@ -40,15 +41,16 @@
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/bean-boss-favicon.png">
-
-    <!-- Link to CSS file -->
-    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <span class="back-btn"><a class="back-btn-link" href="index.php">&#8617;</a></span>
     <div class="profile-container">
+        <!-- Added Decoration Ropes that visually holds up container -->
+        <span class="rope-decor-left"></span>
+        <span class="rope-decor-right"></span>
         <div class="profile-info">
-            <img src="assets/default-pfp.jpg" width="220px" style="border-radius: 200px; margin-bottom: 10px;" alt="Profile Picture">
+            <img src="profile_pictures/<?php echo htmlspecialchars($user['profile_picture'] ?? 'default-pfp.jpg'); ?>" width="220px" height="220px" style="margin-bottom: 10px; border: 4px solid black; border-radius: 50%; object-fit: cover;
+            object-position: center;" alt="Profile Picture">
 
             <hr class="user-account-hr">
 
