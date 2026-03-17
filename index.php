@@ -23,6 +23,9 @@
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/bean-boss-favicon.png">
+
+    <!-- Link to CSS file -->
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <!-- Game Container -->
