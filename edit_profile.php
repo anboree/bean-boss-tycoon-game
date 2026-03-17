@@ -8,16 +8,42 @@
     include("db/connection.php");
     include("navbar.php");
 
-    if(isset($_POST["save-changes"])){
+    // Empty array for storing errors
+    $errors = [];
+
+    if(isset($_POST["save_changes"])){
         $user_id = $_SESSION["id"];
 
         // Username update
-        if(!empty($_POST["new-username"])){
-            $newUsername = trim($_POST["new-username"]);
-            $stmt = $conn->prepare("UPDATE registered_users SET username = ? WHERE id = ?");
-            $stmt->bind_param("si", $newUsername, $user_id);
-            $stmt->execute();
-            $stmt->close();
+        if(!empty($_POST["new_username"])){
+            $newUsername = trim($_POST["new_username"]);
+            $user_id = $_SESSION["id"];
+
+            // Check if username already exists (except current user)
+            $checkStmt = $conn->prepare("
+                SELECT id 
+                FROM registered_users 
+                WHERE username = ? AND id != ?
+            ");
+
+            $checkStmt->bind_param("si", $newUsername, $user_id);
+            $checkStmt->execute();
+            $checkResult = $checkStmt->get_result();
+
+            if($checkResult->num_rows > 0){
+                $errors["new_username"] = "Username already exists!";
+            } 
+            else{
+                $updateStmt = $conn->prepare("
+                    UPDATE registered_users 
+                    SET username = ? 
+                    WHERE id = ?
+                ");
+                $updateStmt->bind_param("si", $newUsername, $user_id);
+                $updateStmt->execute();
+                $updateStmt->close();
+            }
+            $checkStmt->close();
         }
 
         // Profile picture update
@@ -44,9 +70,14 @@
                 $stmt->execute();
                 $stmt->close();
             }
+            else{
+                $errors["profile_picture"] = "Invalid file format! (Allowed: JPG, JPEG, PNG)";
+            }
         }
-        header("Location: edit_profile.php");
-        exit();
+        if(count($errors) == 0){
+            header("Location: edit_profile.php");
+            exit();
+        }
     }
 
     $stmt = $conn->prepare("
@@ -82,6 +113,9 @@
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/bean-boss-favicon.png">
+
+    <!-- Link to CSS file -->
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <span class="back-btn"><a class="back-btn-link" href="user_account.php">&#8617;</a></span>
@@ -104,11 +138,22 @@
 
             <p class="user-account-info" style="font-size: 20px; margin-bottom: 4px;"><?= htmlspecialchars($user["username"]) ?></p>
             <p class="account-settings-text">Change Username:</p>
-            <input type="text" name="new-username" id="change-username-input" placeholder="Enter new username">
+            <input type="text" name="new_username" id="change-username-input" placeholder="Enter new username">
 
             <hr class="account-settings-hr">
 
-            <input type="submit" name="save-changes" class="save-changes-btn" value="Save Changes">
+            <input type="submit" name="save_changes" class="save-changes-btn" value="Save Changes">
+
+            <!-- Error output -->
+            <?php
+                if(count($errors) > 0){
+                    echo "<ul class='error-msg'>";
+                    foreach($errors as $error){
+                        echo "<li>" . $error . "</li>";
+                    }
+                    echo "</ul>";
+                }
+            ?>
         </form>
     </div>
 </body>
