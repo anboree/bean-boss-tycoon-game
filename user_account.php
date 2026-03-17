@@ -41,6 +41,9 @@
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="assets/bean-boss-favicon.png">
+
+    <!-- Link to CSS file -->
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <span class="back-btn"><a class="back-btn-link" href="index.php">&#8617;</a></span>
