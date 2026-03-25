@@ -545,6 +545,78 @@ body{
     background-color: var(--button-hover-color);
 }
 
+.account-settings-flex-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 40rem;
+    margin: 25px auto 0 auto;
+}
+
+.account-settings-option{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    font-family: "Nunito";
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--text-color);
+    margin-bottom: 25px;
+}
+
+.account-settings-button{
+    margin-top: -10px;
+}
+
+.button{
+    display: inline-block;
+    background-color: #d2d2d2;
+    width: 55px;
+    height: 25px;
+    border-radius: 50px;
+    cursor: pointer;
+    position: relative;
+    transition: 0.2s;
+    margin-top: 12px;
+    margin-bottom: -8px;
+}
+.button::before{
+    position: absolute;
+    content: '';
+    background-color: white;
+    width: 15px;
+    height: 15px;
+    border-radius: 20px;
+    margin: 5px;
+    transition: 0.2s;
+}
+input:checked + .button{
+    background-color: green;
+}
+input:checked + .button::before{
+    transform: translateX(30px);
+}
+
+#check1, #check2, #check3{
+    display: none;
+}
+
+#delete-account-button{
+    display: block;
+    margin: 12px auto 12px auto;
+    width: 200px;
+    padding: 5px;
+    font-family: "Nunito";
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--text-color);
+    background-color: red;
+    border: 3px solid black;
+    cursor: pointer;
+}
+
 /* leaderboard.php */
 .leaderboard-container{
     width: 55rem;
