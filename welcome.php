@@ -32,9 +32,9 @@
             <p id="welcome-tagline">Build your coffee empire, one bean at a time</p>
 
             <ul class="welcome-features">
-                <li>📈 Grow your coffee business</li>
-                <li>☕ Brew, upgrade, and automate</li>
-                <li>🏪 From a stand to a coffee empire</li>
+                <li><img src="assets/chart-icon.png" alt="chart" width="20px" style="margin-bottom: -3px;"> Grow your coffee business</li><br>
+                <li><img src="assets/coffee-cup-icon.png" alt="coffee cup" width="20px" style="margin-bottom: -2px;"> Brew, upgrade, and automate</li><br>
+                <li><img src="assets/coffee-shop-icon.png" alt="coffee shop" width="20px" style="margin-bottom: -4px;"> From a stand to a coffee empire</li>
             </ul>
 
             <div class="welcome-actions">
