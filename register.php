@@ -126,6 +126,15 @@
                 $stmt->execute();
                 $stmt->close();
 
+                // Insert user preferences
+                $stmt = $conn->prepare("
+                    INSERT INTO user_account_preferences (user_id)
+                    VALUES (?)
+                ");
+                $stmt->bind_param("i", $newUserId);
+                $stmt->execute();
+                $stmt->close();
+
                 // Commit both inserts
                 $conn->commit();
 
