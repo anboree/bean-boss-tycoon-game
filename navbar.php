@@ -43,7 +43,7 @@
             <?php if(isset($_SESSION["id"])): ?>
                 <!-- Logged-in user -->
                 <div class="leaderboard-pfp-div">
-                    <img src="assets/leaderboard-icon.png" id="leaderboard-icon" width="30" alt="Leaderboard Icon">
+                    <img src="assets/leaderboard-icon.png" id="leaderboard-icon" width="30px" alt="Leaderboard Icon">
                     <a href="leaderboard.php" class="nav-link leaderboard-link">Leaderboard</a>
 
                     <a href="user_account.php" class="nav-link">
