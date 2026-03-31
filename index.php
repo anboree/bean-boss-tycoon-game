@@ -44,29 +44,28 @@
             <p>Time: <span id="currentTime">7:00 AM</span></p>
         </div>
 
-        <!-- Main game box -->
-        <div class="main-box">
-            <p id="moneyText">Money: $<span id="money">0</span></p>
-            <button id="brewBtn">Brew Coffee</button>
-            <img id="pauseBtn" src="assets/pause-icon.png" alt="Pause Game">
-        </div>
+        <div class="game-grid-container">
+            <!-- Main game box -->
+            <div class="main-box">
+                <p id="moneyText">Money: $<span id="money">0</span></p>
+                <button id="brewBtn">Brew Coffee</button>
+                <img id="pauseBtn" src="assets/pause-icon.png" alt="Pause Game">
+            </div>
 
-        <!-- Upgrades box -->
-        <p id="upgradesHeaderText">Upgrades</p>
-        <div class="upgrades-box">
-            <p id="upgradesLevelText">Level <span id="upgrades-level">1</span></p>
-            <button class="upgradesBtn"><span id="">Buy Coffee Machine - $400 (Used, Earns $1 - $3 per click)</span></button>
-            <button class="upgradesBtn"><span id="">Buy Bigger Coffee Stand - $1,000 (Unlocks barista)</span></button>
-            <button class="upgradesBtn"><span id="">Hire Barista - $120 per day (Earns $1 per second)</span></button>
-            <button class="upgradesBtn"><span id="">Buy Small Coffee Shop - $5,000 (Unlocks Level 2)</span></button>
-        </div>
+            <!-- Upgrades box -->
+            <div class="upgrades-box">
+                <p id="upgradesLevelText">Level <span id="upgrades-level">1</span> Upgrades</p>
+                <button class="upgradesBtn"><span id="">Buy Coffee Machine - $400 (Used, Earns $1 - $3 per click)</span></button>
+                <button class="upgradesBtn"><span id="">Buy Bigger Coffee Stand - $1,000 (Unlocks barista)</span></button>
+                <button class="upgradesBtn"><span id="">Hire Barista - $120 per day (Earns $1 per second)</span></button>
+                <button class="upgradesBtn"><span id="">Buy Small Coffee Shop - $5,000 (Unlocks Level 2)</span></button>
+            </div>
 
-        <!-- Activity box -->
-        <p id="activityHeaderText">Activity</p>
-        <div id="activity-box">
-            <p class="activity-text">Welcome back to Bean Boss!</p>
+            <!-- Activity box -->
+            <div id="activity-box">
+                <p class="activity-text">Welcome back to Bean Boss! <br> This is where your game activity is shown.</p>
+            </div>
         </div>
-
     </div>
 
     <script src="js/app.js"></script>
