@@ -17,7 +17,9 @@
 }
 
 body{
-    background-color: var(--background-color);
+    background-image: url(../assets/bean-boss-background-image.png);
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 /* Rope Decoration */
@@ -301,10 +303,32 @@ body{
     margin: 17px auto 0 auto;
 }
 
+.money-popup {
+    position: absolute;
+    font-family: "Nunito";
+    font-weight: bold;
+    color: green;
+    pointer-events: none;
+    animation: floatUp 0.8s ease-out;
+}
+@keyframes floatUp {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-40px);
+    }
+}
+
 /* Upgrades */
 .upgrades-box{
     width: 350px;
     height: max-content;
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
     padding: 20px;
     text-align: center;
     border: 2px solid black;
@@ -326,6 +350,7 @@ body{
     font-size: 18px;
     box-shadow: 0 4px 0 #8a4f2d;
     margin-bottom: 5px;
+    display: inline-block;
 }
 .upgradesBtn:hover{
     background-color: var(--button-hover-color);
@@ -348,7 +373,7 @@ body{
     padding: 20px;
     text-align: center;
     border: 2px solid black;
-    margin: 40px auto 20px auto;
+    margin: 0 auto 0 auto;
     border-radius: 20px;
     max-height: 150px;
     overflow-y: auto;
@@ -643,3 +668,5 @@ input:checked + .button::before{
     margin: 40px auto 0 auto;
     background-color: var(--secondary-background-color);
 }
+
+/* Responsive design */
