@@ -55,10 +55,11 @@
             <!-- Upgrades box -->
             <div class="upgrades-box">
                 <p id="upgradesLevelText">Level <span id="upgrades-level">1</span> Upgrades</p>
-                <button class="upgradesBtn"><span id="">Buy Coffee Machine - $400 (Used, Earns $1 - $3 per click)</span></button>
-                <button class="upgradesBtn"><span id="">Buy Bigger Coffee Stand - $1,000 (Unlocks barista)</span></button>
-                <button class="upgradesBtn"><span id="">Hire Barista - $120 per day (Earns $1 per second)</span></button>
-                <button class="upgradesBtn"><span id="">Buy Small Coffee Shop - $5,000 (Unlocks Level 2)</span></button>
+                <button class="upgradesBtn" onclick="buyUpgrade('coffeeMachine')">Buy Coffee Machine - $50 (Used, Earns $1 - $3 per click) <img src="assets/used-coffee-machine-upgrade.png" alt="Used Coffee Machine" width="50px" height="50px" style="display: block; margin: 0 auto 0 auto"></button>
+                <button class="upgradesBtn" onclick="buyUpgrade('businessSign')">Buy Business Sign - $120 (+10% more money) <img src="assets/coffee-business-sign-upgrade.png" alt="Business Sign" width="50px" height="50px" style="display: block; margin: 0 auto 0 auto"></button>
+                <button class="upgradesBtn" onclick="buyUpgrade('hireBarista')">Hire Barista - $100 per day (Earns $1 per 2 seconds) <img src="assets/hire-part-time-barista-upgrade.png" alt="Part-Time Barista" width="50px" height="50px" style="display: block; margin: 0 auto 0 auto"></button>
+                <button class="upgradesBtn" onclick="buyUpgrade('premiumBeans')">Buy Premium Beans - $400 (Earns more money) <img src="assets/premium-coffee-beans-upgrade.png" alt="Premium Coffee Beans" width="50px" height="50px" style="display: block; margin: 0 auto 0 auto"></button>
+                <button class="upgradesBtn" onclick="buyUpgrade('biggerStand')"><span id="levelFinalUpgrade">Buy Bigger Coffee Stand - $800 (Unlocks Level 2, Increased rent price)</span></button>
             </div>
 
             <!-- Activity box -->
