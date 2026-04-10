@@ -39,12 +39,24 @@ const upgrades = {
     }
 };
 
-// Money, day, time, pause/play and brew button
+// All constants required for game
 const moneySpan = document.getElementById("money");
 const daySpan = document.getElementById("currentDay");
 const timeSpan = document.getElementById("currentTime");
 const brewBtn = document.getElementById("brewBtn");
 const pauseBtn = document.getElementById("pauseBtn");
+const activityBox = document.getElementById("activity-box");
+const levelFinalUpgrade = document.getElementById("levelFinalUpgrade");
+
+// Function for activity box messages
+function addActivityMessage(message) {
+    const p = document.createElement("p");
+    p.textContent = message;
+    p.classList.add("activity-text");
+
+    activityBox.append(p);
+    activityBox.scrollTop = activityBox.scrollHeight; // Auto-scroll down
+}
 
 // Click value function
 function getClickValue() {
@@ -97,6 +109,7 @@ function updateUI(){
 function updatePauseUI() {
     if(game.isPaused){
         pauseBtn.src = "assets/resume-icon.png";
+        addActivityMessage("The game is currently paused!");
     } 
     else{
         pauseBtn.src = "assets/pause-icon.png";
@@ -148,7 +161,7 @@ function endDay() {
     game.isOpen = true;
 }
 
-setInterval(advanceTime, 500); // 1 second = 1 in-game minute
+setInterval(advanceTime, 300); // 0.3 seconds = 1 in-game minute
 
 // Added functionality for brew button
 brewBtn.addEventListener("click", function () {
@@ -165,6 +178,7 @@ brewBtn.addEventListener("click", function () {
 function buyUpgrade(upgradeKey) {
     const upgrade = upgrades[upgradeKey];
 
+    if(game.isPaused || !game.isOpen) return;
     if(upgrade.owned) return;
 
     // Prevents buying Bigger Stand early
@@ -196,7 +210,7 @@ function canUnlockNextLevel() {
     return(
         upgrades.coffeeMachine.owned &&
         upgrades.businessSign.owned &&
-        upgrades.barista.owned &&
+        upgrades.hireBarista.owned &&
         upgrades.premiumBeans.owned
     );
 }
