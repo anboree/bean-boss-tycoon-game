@@ -47,7 +47,7 @@
         <div class="game-grid-container">
             <!-- Main game box -->
             <div class="main-box">
-                <p id="moneyText">Money: $<span id="money">0</span></p>
+                <p id="moneyText">Money: <span id="money-color">$<span id="money">0</span></span></p>
                 <button id="brewBtn">Brew Coffee</button>
                 <img id="pauseBtn" src="assets/pause-icon.png" alt="Pause Game">
             </div>
@@ -59,12 +59,20 @@
                 <button class="upgradesBtn" onclick="buyUpgrade('businessSign')">Buy Business Sign - $120 (+10% more money) <img src="assets/coffee-business-sign-upgrade.png" alt="Business Sign" width="50px" height="50px" style="display: block; margin: 0 auto 0 auto"></button>
                 <button class="upgradesBtn" onclick="buyUpgrade('hireBarista')">Hire Barista - $100 per day (Earns $1 per 2 seconds) <img src="assets/hire-part-time-barista-upgrade.png" alt="Part-Time Barista" width="50px" height="50px" style="display: block; margin: 0 auto 0 auto"></button>
                 <button class="upgradesBtn" onclick="buyUpgrade('premiumBeans')">Buy Premium Beans - $400 (Earns more money) <img src="assets/premium-coffee-beans-upgrade.png" alt="Premium Coffee Beans" width="50px" height="50px" style="display: block; margin: 0 auto 0 auto"></button>
-                <button class="upgradesBtn" onclick="buyUpgrade('biggerStand')"><span id="levelFinalUpgrade">Buy Bigger Coffee Stand - $800 (Unlocks Level 2, Increased rent price)</span></button>
+                <button class="upgradesBtn" id="levelFinalUpgrade" onclick="buyUpgrade('biggerStand')">Buy Bigger Coffee Stand - $800 (Unlocks Level 2, Increased rent price) <img src="assets/bigger-coffee-stand-upgrade.png" alt="Bigger Coffee Stand" width="50px" height="50px" style="display: block; margin: 0 auto 0 auto"></button>
             </div>
 
             <!-- Activity box -->
             <div id="activity-box">
-                <p class="activity-text">Welcome back to Bean Boss! <br> This is where your game activity is shown.</p>
+                <hr class="activity-box-hr">
+                    <p class="activity-text">Welcome back to Bean Boss! <br> This is where your game activity is shown.</p>
+                <hr class="activity-box-hr">
+            </div>
+
+            <!-- Save and Load buttons -->
+            <div id="save-load-box">
+                <input type="submit" name="save" id="save-game-btn" value="Save Game">
+                <input type="submit" name="load" id="load-game-btn" value="Load Game">
             </div>
         </div>
     </div>
