@@ -14,6 +14,9 @@
     --button-color: #C97B43;
     --button-hover-color: #E2A76F;
     --game-containers-background-color: rgb(230, 230, 230);
+    --money-color: rgb(0, 150, 0);
+    --save-game-button-color: rgb(0, 210, 0);
+    --load-game-button-color: rgb(0, 0, 220);
 }
 
 body{
@@ -252,7 +255,8 @@ body{
     grid-template-columns: 1fr 1fr;
     grid-template-areas: 
     "main upgrades"
-    "activity upgrades";
+    "activity upgrades"
+    "saveload upgrades";
     gap: 20px;
 }
 
@@ -272,6 +276,10 @@ body{
     font-family: "Nunito";
     font-size: 22px;
     font-weight: bold;
+}
+
+#money-color{
+    color: var(--money-color);
 }
 
 #brewBtn{
@@ -369,13 +377,13 @@ body{
 /* Activity box */
 #activity-box{
     width: 350px;
-    height: 150px;
+    height: 180px;
+    max-height: 180px;
     padding: 20px;
     text-align: center;
     border: 2px solid black;
     margin: 0 auto 0 auto;
     border-radius: 20px;
-    max-height: 150px;
     overflow-y: auto;
     grid-area: activity;
     display: flex;
@@ -384,12 +392,74 @@ body{
     align-items: center;
 }
 
+.activity-box-hr{
+    width: 280px;
+    color: var(--secondary-background-color);
+    margin: 8px auto;
+}
+
 .activity-text{
     font-family: "Nunito";
     font-size: 18px;
+    margin: 2px 0;
 }
 
-.main-box, .upgrades-box, #activity-box{
+/* Save & Load */
+#save-load-box{
+    width: 350px;
+    grid-area: saveload;
+    height: max-content;
+    padding: 10px;
+    border-radius: 20px;
+    margin: 0 auto 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+#save-game-btn{
+    cursor: pointer;
+    padding: 8px;
+    border: none;
+    border-radius: 10px;
+    font-family: "Nunito";
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 4px 0 rgb(0, 85, 0);
+    transition: all 0.1s ease;
+    background-color: var(--save-game-button-color);
+    color: var(--text-color);
+    margin-right: 12px;
+}
+#save-game-btn:active{
+    transform: translateY(4px);
+    box-shadow: none;
+}
+#save-game-btn:hover{
+    background-color: rgb(0, 180, 0);
+}
+
+#load-game-btn{
+    cursor: pointer;
+    padding: 8px;
+    border: none;
+    border-radius: 10px;
+    font-family: "Nunito";
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 4px 0 rgb(0, 0, 85);
+    transition: all 0.1s ease;
+    background-color: var(--load-game-button-color);
+    color: var(--text-color);
+}
+#load-game-btn:active{
+    transform: translateY(4px);
+    box-shadow: none;
+}
+#load-game-btn:hover{
+    background-color: rgb(0, 0, 170);
+}
+
+.main-box, .upgrades-box, #activity-box, #save-load-box{
     box-shadow: 0 6px 0 black;
     background: linear-gradient(to bottom, #BBB5A2, #9f9987);
 }
