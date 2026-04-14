@@ -1,12 +1,41 @@
 <?php
     session_start();
 
+    include("db/connection.php");
+
     if(!isset($_SESSION["id"])){
         header("Location: welcome.php");
     }
 
-    include("db/connection.php");
+    // Checks if start_game has been completed for registered users
+    $stmt = $conn->prepare("
+        SELECT id FROM user_game_progress WHERE user_id = ?
+    ");
+    $stmt->bind_param("i", $_SESSION["id"]);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if($result->num_rows === 0){
+        header("Location: start_game.php");
+        exit();
+    }
+
     include("navbar.php");
+
+    // Fetching player business name from the DB
+    $stmt = $conn->prepare("
+        SELECT business_name 
+        FROM user_game_progress 
+        WHERE user_id = ?
+    ");
+    $stmt->bind_param("i", $_SESSION["id"]);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    $gameData = $result->fetch_assoc();
+    $business_name = $gameData["business_name"];
+
+    $stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -27,7 +56,7 @@
     <!-- Link to CSS file -->
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body id="index-body">
     <!-- Game Container -->
     <div class="gameContainer">
 
@@ -36,7 +65,7 @@
         <span class="rope-decor-right"></span>
 
         <!-- Business Name -->
-        <p class="business-name"><span id="businessName"><b>My Coffee Stand</b></span></p>
+        <p class="business-name"><span id="businessName"><b><?= htmlspecialchars($business_name) ?></b></span></p>
 
         <!-- Day & Time -->
         <div class="day-time">
@@ -48,19 +77,13 @@
             <!-- Main game box -->
             <div class="main-box">
                 <p id="moneyText">Money: <span id="money-color">$<span id="money">0</span></span></p>
+                <p id="beansText">Beans: <span id="beans">250</span></p>
                 <button id="brewBtn">Brew Coffee</button>
-                <img id="pauseBtn" src="assets/pause-icon.png" alt="Pause Game">
+                <img id="pauseBtn" src="assets/resume-icon.png" alt="Resume/Pause Game">
             </div>
 
             <!-- Upgrades box -->
-            <div class="upgrades-box">
-                <p id="upgradesLevelText">Level <span id="upgrades-level">1</span> Upgrades</p>
-                <button class="upgradesBtn" onclick="buyUpgrade('coffeeMachine')">Buy Coffee Machine - $50 (Used, Earns $1 - $3 per click) <img src="assets/used-coffee-machine-upgrade.png" alt="Used Coffee Machine" width="50px" height="50px" style="display: block; margin: 0 auto 0 auto"></button>
-                <button class="upgradesBtn" onclick="buyUpgrade('businessSign')">Buy Business Sign - $120 (+10% more money) <img src="assets/coffee-business-sign-upgrade.png" alt="Business Sign" width="50px" height="50px" style="display: block; margin: 0 auto 0 auto"></button>
-                <button class="upgradesBtn" onclick="buyUpgrade('hireBarista')">Hire Barista - $100 per day (Earns $1 per 2 seconds) <img src="assets/hire-part-time-barista-upgrade.png" alt="Part-Time Barista" width="50px" height="50px" style="display: block; margin: 0 auto 0 auto"></button>
-                <button class="upgradesBtn" onclick="buyUpgrade('premiumBeans')">Buy Premium Beans - $400 (Earns more money) <img src="assets/premium-coffee-beans-upgrade.png" alt="Premium Coffee Beans" width="50px" height="50px" style="display: block; margin: 0 auto 0 auto"></button>
-                <button class="upgradesBtn" id="levelFinalUpgrade" onclick="buyUpgrade('biggerStand')">Buy Bigger Coffee Stand - $800 (Unlocks Level 2, Increased rent price) <img src="assets/bigger-coffee-stand-upgrade.png" alt="Bigger Coffee Stand" width="50px" height="50px" style="display: block; margin: 0 auto 0 auto"></button>
-            </div>
+            <div class="upgrades-box" id="upgradesContainer"></div>
 
             <!-- Activity box -->
             <div id="activity-box">
@@ -73,6 +96,11 @@
             <div id="save-load-box">
                 <input type="submit" name="save" id="save-game-btn" value="Save Game">
                 <input type="submit" name="load" id="load-game-btn" value="Load Game">
+            </div>
+
+            <!-- Store box -->
+            <div id="store-box">
+                <span id="store-box-header">Bean Store</span>
             </div>
         </div>
     </div>
