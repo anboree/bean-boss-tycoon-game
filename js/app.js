@@ -1,7 +1,6 @@
 // Game object
 const game = {
     money: 0,
-
     day: 1,
     hour: 7, // Start at 7 AM
     minute: 0,
@@ -10,34 +9,101 @@ const game = {
 };
 
 // Upgrades
-const upgrades = {
+const upgrades = [
     // Level 1
-    coffeeMachine: {
+    {
+        key: "coffeeMachine",
         name: "Coffee Machine",
-        cost: 50,
+        cost: 80,
+        level: 1,
+        icon: "assets/used-coffee-machine-upgrade.png",
+        description: "Used, Earns $1 - $3 per click",
         owned: false
     },
-    businessSign: {
+    {
+        key: "businessSign",
         name: "Business Sign",
         cost: 120,
+        level: 1,
+        icon: "assets/coffee-business-sign-upgrade.png",
+        description: "+10% more money",
         owned: false
     },
-    hireBarista: {
+    {
+        key: "hireBarista",
         name: "Part-Time Barista",
         cost: 100,
+        level: 1,
+        icon: "assets/hire-part-time-barista-upgrade.png",
+        description: "Earns $1 per 2 seconds",
         owned: false
     },
-    premiumBeans: {
+    {
+        key: "premiumBeans",
         name: "Premium Beans",
-        cost: 400,
+        cost: 500,
+        level: 1,
+        icon: "assets/premium-coffee-beans-upgrade.png",
+        description: "Earns more money",
         owned: false
     },
-    biggerStand: {
+    {
+        key: "biggerCoffeeStand",
         name: "Bigger Coffee Stand",
-        cost: 800,
+        cost: 1000,
+        level: 1,
+        icon: "assets/bigger-coffee-stand-upgrade.png",
+        description: "Unlocks Level 2, Increased rent price",
+        owned: false
+    },
+    // Level 2
+    {
+        key: "espressoBeans",
+        name: "Espresso Beans",
+        cost: 1200,
+        level: 2,
+        icon: "assets/",
+        description: "Unlocks Espresso Machine",
+        owned: false
+    },
+    {
+        key: "espressoMachine",
+        name: "Espresso Machine",
+        cost: 2000,
+        level: 2,
+        icon: "assets/",
+        description: "New, Earns $5 - $10 per click",
+        owned: false
+    },
+    {
+        key: "hireFullTimeBarista",
+        name: "Full-Time Barista",
+        cost: 200,
+        level: 2,
+        icon: "assets/",
+        description: "Earns $4 per 2 seconds",
+        owned: false
+    },
+    {
+        key: "biggerBusinessSign",
+        name: "Bigger Business Sign",
+        cost: 600,
+        level: 2,
+        icon: "assets/",
+        description: "+20% more money",
+        owned: false
+    },
+    {
+        key: "smallCoffeeShop",
+        name: "Small Coffee Shop",
+        cost: 3000,
+        level: 2,
+        icon: "assets/",
+        description: "Unlocks Level 3, Increased rent price",
         owned: false
     }
-};
+    // Level 3
+];
 
 // All constants required for game
 const moneySpan = document.getElementById("money");
@@ -46,7 +112,31 @@ const timeSpan = document.getElementById("currentTime");
 const brewBtn = document.getElementById("brewBtn");
 const pauseBtn = document.getElementById("pauseBtn");
 const activityBox = document.getElementById("activity-box");
-const levelFinalUpgrade = document.getElementById("levelFinalUpgrade");
+const upgradesContainer = document.getElementById("upgradesContainer");
+
+// Helper function for upgrades
+function getUpgrade(key){
+    return upgrades.find(upg => upg.key === key);
+}
+
+// Function for dynamically rendering upgrades
+function renderUpgrades(level){
+    upgradesContainer.innerHTML = `<span id="upgradesLevelText">Level ${level} Upgrades</span>`;
+
+    upgrades.filter(upg => upg.level === level).forEach(upg => {
+            const btn = document.createElement("button");
+            btn.classList.add("upgradesBtn");
+
+            btn.innerHTML = `
+                Buy ${upg.name} - $${upg.cost} (${upg.description})
+                <img src="${upg.icon}" width="50" height="50" style="display: block; margin: 0 auto">
+            `;
+
+            btn.onclick = () => buyUpgrade(upg.key);
+
+            upgradesContainer.appendChild(btn);
+        });
+}
 
 // Function for activity box messages
 function addActivityMessage(message) {
@@ -63,13 +153,13 @@ function getClickValue() {
     let min = 1;
     let max = 1;
 
-    if (upgrades.coffeeMachine.owned) {
+    if(getUpgrade("coffeeMachine").owned){
         min = 1;
         max = 3;
     }
 
-    if (upgrades.premiumBeans.owned) {
-        if (upgrades.coffeeMachine.owned) {
+    if(getUpgrade("premiumBeans").owned){
+        if (getUpgrade("coffeeMachine").owned){
             min = 3;
             max = 6;
         } else {
@@ -81,8 +171,8 @@ function getClickValue() {
     let value = Math.floor(Math.random() * (max - min + 1)) + min;
 
     // Business sign multiplier
-    if (upgrades.businessSign.owned) {
-        value = Math.floor(value * 1.1);
+    if(getUpgrade("businessSign").owned){
+        value = Math.ceil(value * 1.1);
     }
 
     return value;
@@ -92,8 +182,9 @@ function getClickValue() {
 setInterval(() => {
     if(game.isPaused || !game.isOpen) return;
 
-    if(upgrades.hireBarista.owned) {
+    if(getUpgrade("hireBarista").owned){
         game.money += 1;
+        addActivityMessage("Your barista earned $1");
         updateUI();
     }
 }, 2000);
@@ -106,13 +197,14 @@ function updateUI(){
 }
 
 // Pause game logic
-function updatePauseUI() {
+function updatePauseUI(){
     if(game.isPaused){
         pauseBtn.src = "assets/resume-icon.png";
-        addActivityMessage("The game is currently paused!");
+        addActivityMessage("Game paused");
     } 
     else{
         pauseBtn.src = "assets/pause-icon.png";
+        addActivityMessage("Game resumed");
     }
 }
 
@@ -176,13 +268,12 @@ brewBtn.addEventListener("click", function () {
 
 // Upgrade buying logic
 function buyUpgrade(upgradeKey) {
-    const upgrade = upgrades[upgradeKey];
+    const upgrade = getUpgrade(upgradeKey);
 
     if(game.isPaused || !game.isOpen) return;
     if(upgrade.owned) return;
 
-    // Prevents buying Bigger Stand early
-    if(upgradeKey === "biggerStand" && !canUnlockNextLevel()) {
+    if(upgradeKey === "biggerCoffeeStand" && !canUnlockNextLevel()) {
         addActivityMessage("You must buy all upgrades first!");
         return;
     }
@@ -193,8 +284,7 @@ function buyUpgrade(upgradeKey) {
 
         addActivityMessage(`You bought ${upgrade.name}!`);
 
-        // Level unlock logic
-        if (upgradeKey === "biggerStand") {
+        if (upgradeKey === "biggerCoffeeStand") {
             unlockLevel2();
         }
 
@@ -208,22 +298,18 @@ function buyUpgrade(upgradeKey) {
 // Checks if all upgrades required for level 2 are owned
 function canUnlockNextLevel() {
     return(
-        upgrades.coffeeMachine.owned &&
-        upgrades.businessSign.owned &&
-        upgrades.hireBarista.owned &&
-        upgrades.premiumBeans.owned
+        getUpgrade("coffeeMachine").owned &&
+        getUpgrade("businessSign").owned &&
+        getUpgrade("hireBarista").owned &&
+        getUpgrade("premiumBeans").owned
     );
 }
 
-if(!canUnlockNextLevel()){
-    levelFinalUpgrade.disabled = true;
-}
-
 function unlockLevel2() {
-    addActivityMessage("🎉 You unlocked Level 2!");
-    document.getElementById("upgrades-level").textContent = 2;
-
-    // Later: load new upgrades, reset shop, etc.
+    addActivityMessage("🎉You unlocked Level 2!");
+    renderUpgrades(2);
 }
 
+renderUpgrades(1);
+game.isPaused = true;
 updateUI();
