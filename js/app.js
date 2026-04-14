@@ -5,7 +5,7 @@ const game = {
     hour: 7, // Start at 7 AM
     minute: 0,
     isOpen: true,
-    isPaused: false,
+    isPaused: true,
 };
 
 // Upgrades
@@ -311,5 +311,4 @@ function unlockLevel2() {
 }
 
 renderUpgrades(1);
-game.isPaused = true;
 updateUI();
