@@ -15,7 +15,7 @@
     --button-hover-color: #E2A76F;
     --game-containers-background-color: rgb(230, 230, 230);
     --money-color: rgb(0, 150, 0);
-    --save-game-button-color: rgb(0, 210, 0);
+    --save-game-button-color: rgb(0, 185, 0);
     --load-game-button-color: rgb(0, 0, 220);
 }
 
@@ -23,6 +23,7 @@ body{
     background-image: url(../assets/bean-boss-background-image.png);
     background-size: cover;
     background-repeat: no-repeat;
+    height: 100vh;
 }
 
 /* Rope Decoration */
@@ -45,6 +46,10 @@ body{
 }
 
 /* Navbar */
+.navbar-mobile{
+    display: none;
+}
+
 .navbar{
     background-color: var(--secondary-background-color);
     width: 75rem;
@@ -174,7 +179,19 @@ body{
     font-family: "Nunito";
 }
 
-#register-btn, #login-btn{
+#show-password-label{
+    display: block;
+    color: var(--text-color);
+    font-family: "Nunito";
+    font-size: 14px;
+}
+
+#show-password-toggle{
+    display: block;
+    margin: 0 auto;
+}
+
+#register-btn, #login-btn, #start-game-btn{
     cursor: pointer;
     display: block;
     margin: 0 auto 0 auto;
@@ -188,7 +205,7 @@ body{
     font-weight: bold;
     background-color: var(--button-color);
 }
-#register-btn:hover, #login-btn:hover{
+#register-btn:hover, #login-btn:hover, #start-game-btn:hover{
     background-color: var(--button-hover-color);
 }
 
@@ -256,7 +273,8 @@ body{
     grid-template-areas: 
     "main upgrades"
     "activity upgrades"
-    "saveload upgrades";
+    "saveload upgrades"
+    "store store";
     gap: 20px;
 }
 
@@ -282,10 +300,21 @@ body{
     color: var(--money-color);
 }
 
+#beansText{
+    font-family: "Nunito";
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 4px;
+}
+
+#beans{
+    color: var(--secondary-background-color);
+}
+
 #brewBtn{
-    width: 130px;
+    width: 150px;
     margin-top: 10px;
-    padding: 5px;
+    padding: 7px;
     cursor: pointer;
     background-color: var(--button-color);
     border: none;
@@ -368,7 +397,7 @@ body{
     box-shadow: none;
 }
 
-#upgradesLevelText, #upgrades-level{
+#upgradesLevelText{
     font-family: "Nunito";
     font-size: 22px;
     font-weight: bold;
@@ -410,6 +439,7 @@ body{
     grid-area: saveload;
     height: max-content;
     padding: 10px;
+    border: 2px solid black;
     border-radius: 20px;
     margin: 0 auto 0 auto;
     display: flex;
@@ -424,7 +454,7 @@ body{
     font-family: "Nunito";
     font-size: 14px;
     font-weight: bold;
-    box-shadow: 0 4px 0 rgb(0, 85, 0);
+    box-shadow: 0 4px 0 rgb(0, 80, 0);
     transition: all 0.1s ease;
     background-color: var(--save-game-button-color);
     color: var(--text-color);
@@ -435,7 +465,7 @@ body{
     box-shadow: none;
 }
 #save-game-btn:hover{
-    background-color: rgb(0, 180, 0);
+    background-color: rgb(0, 135, 0);
 }
 
 #load-game-btn{
@@ -459,7 +489,28 @@ body{
     background-color: rgb(0, 0, 170);
 }
 
-.main-box, .upgrades-box, #activity-box, #save-load-box{
+/* Store box */
+#store-box{
+    width: 50rem;
+    height: max-content;
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px;
+    text-align: center;
+    border: 2px solid black;
+    border-radius: 20px;
+    margin: 0 auto;
+    grid-area: store;
+}
+
+#store-box-header{
+    font-family: "Nunito";
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.main-box, .upgrades-box, #activity-box, #save-load-box, #store-box{
     box-shadow: 0 6px 0 black;
     background: linear-gradient(to bottom, #BBB5A2, #9f9987);
 }
@@ -548,8 +599,6 @@ body{
 .profile-flex-container{
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
     height: 85vh;
 }
 
@@ -739,4 +788,261 @@ input:checked + .button::before{
     background-color: var(--secondary-background-color);
 }
 
+/* start_game.php */
+.start-game-flex-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.start-game-container{
+    width: max-content;
+    background-color: var(--secondary-background-color);
+    padding: 16px;
+    border: 4px solid black;
+    border-radius: 20px;
+}
+
+#start-game-label{
+    margin-bottom: 14px;
+    font-size: 24px;
+    text-align: center;
+}
+
+#start-game-input{
+    display: block;
+    margin: 0 auto 16px auto;
+    text-align: center;
+    width: 250px;
+    padding: 6px 0;
+}
+
+#start-game-btn{
+    width: 160px;
+    padding: 8px;
+}
+
 /* Responsive design */
+@media screen and (max-width: 800px){
+    .rope-decor-left, .rope-decor-right{
+        display: none;
+    }
+
+    /* Navbar */
+    .navbar{
+        display: none;
+    }
+
+    .navbar-mobile{
+        background-color: var(--secondary-background-color);
+        width: 100%;
+        margin: 0 auto 0 auto;
+        border-top-right-radius: 20px;
+        border-top-left-radius: 20px;
+        padding: 10px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        border-top: 4px solid black;
+        border-left: 4px solid black;
+        border-right: 4px solid black;
+        position: fixed;
+        bottom: 0;
+    }
+
+    /* welcome.php */
+    .welcome-sub-container{
+        width: 95%;
+    }
+
+    #welcome-header{
+        font-size: 20px;
+    }
+
+    #welcome-tagline{
+        font-size: 16px;
+    }
+
+    .welcome-features{
+        font-size: 16px;
+    }
+
+    /* Register & Login */
+    .back-btn{
+        font-size: 32px;
+    }
+
+    .register-login-heading{
+        font-size: 20px;
+    }
+
+    .form{
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    .label{
+        font-size: 16px;
+    }
+
+    .subform-redirect{
+        font-size: 12px;
+    }
+
+    /* user_account.php */
+    .profile-flex-container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .profile-container{
+        width: 95%;
+    }
+
+    .user-account-info{
+        font-size: 16px;
+    }
+
+    #user-account-username{
+        font-size: 18px;
+    }
+
+    .user-account-hr{
+        width: 300px;
+    }
+
+    /* edit_profile.php and user_account_settings.php */
+    .account-settings-container{
+        width: 95%;
+    }
+
+    .account-settings-header{
+        font-size: 20px;
+    }
+
+    .account-settings-hr{
+        width: 300px;
+    }
+
+    .account-settings-flex-container{
+        width: 96%;
+    }
+
+    .account-settings-option{
+        font-size: 16px;
+    }
+
+    /* index.php */
+    #index-body{
+        height: max-content;
+    }
+
+    .gameContainer{
+        width: 95%;
+    }
+
+    .business-name{
+        font-size: 20px;
+    }
+
+    .day-time{
+        font-size: 18px;
+    }
+
+    .game-grid-container{
+        grid-template-columns: 100%;
+        grid-template-areas:
+        "main"
+        "activity"
+        "upgrades"
+        "store"
+        "saveload";
+    }
+
+    #store-box{
+        width: 350px;
+    }
+
+    #save-load-box{
+        margin-bottom: 100px;
+    }
+
+    /* leaderboard.php */
+    .leaderboard-flex-container{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 85vh;
+    }
+
+    .leaderboard-container{
+        width: 90%;
+    }
+
+    /* start_game.php */
+    .start-game-container{
+        width: 90%;
+    }
+
+    #start-game-label{
+        font-size: 20px;
+    }
+}
+
+@media screen and (max-width: 1275px) and (min-width: 801px){
+    .navbar{
+        width: 90%;
+    }
+
+    .rope-decor-left{
+        width: 10px;
+        height: 40px;
+        position: absolute;
+        top: 99px;
+        margin-left: 33px;
+        background-image: linear-gradient(140deg, wheat, black, wheat, black, wheat, black, wheat, black, wheat);
+    }
+
+    .rope-decor-right{
+        width: 10px;
+        height: 40px;
+        position: absolute;
+        top: 99px;
+        margin-left: 671px;
+        background-image: linear-gradient(140deg, wheat, black, wheat, black, wheat, black, wheat, black, wheat);
+    }
+
+    #index-body{
+        height: max-content;
+    }
+    
+    /* Container re-sizing */
+    .profile-container{
+        width: 45rem;
+    }
+
+    .account-settings-container{
+        width: 45rem;
+    }
+
+    .gameContainer{
+        width: 45rem;
+    }
+
+    .game-grid-container{
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .leaderboard-container{
+        width: 45rem;
+    }
+
+    #store-box{
+        width: 650px;
+    }
+}
