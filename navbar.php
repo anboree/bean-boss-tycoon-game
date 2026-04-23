@@ -59,5 +59,40 @@
             <?php endif; ?>
         </div>
     </nav>
+    
+    <!-- Mobile Navbar -->
+    <nav class="navbar-mobile">
+        <div class="nav-mobile-links">
+            <?php if(isset($_SESSION["id"])): ?>
+                <!-- Logged-in user -->
+                <a href="leaderboard.php" class="nav-link">
+                    <img src="assets/leaderboard-icon.png" width="40px" style="margin-bottom: 20px; margin-left: 22px; margin-right: 20px;" alt="Leaderboard Icon">
+                </a>
+
+                <a href="index.php" class="nav-link">
+                    <img src="assets/bean-boss-logo.png" width="80px" style="margin-right: 20px;" alt="Logo">
+                </a>
+
+                <a href="user_account.php" class="nav-link">
+                    <img id="profile-picture" src="profile_pictures/<?php echo htmlspecialchars($user['profile_picture'] ?? 'default-pfp.jpg'); ?>" width="60px" style="margin-bottom: 10px; border: 4px solid black; border-radius: 50%; object-fit: cover;" alt="Profile">
+                </a>
+            <?php else: ?>
+                <!-- Not logged-in user -->
+                <div class="register-login-nav-div">
+                    <a href="login.php" class="nav-link">
+                        <img src="assets/login-icon.png" width="40px" style="margin-left: 11px; margin-right: 22px;" alt="login-icon">
+                    </a>
+
+                    <a href="welcome.php" class="nav-link">
+                        <img src="assets/bean-boss-logo.png" width="80px" style="margin-right: 22px;" alt="Logo">
+                    </a>
+
+                    <a href="register.php" class="nav-link">
+                        <img src="assets/register-icon.png" width="40px" alt="register-icon">
+                    </a>
+                </div>
+            <?php endif; ?>
+        </div>
+    </nav>
 </body>
 </html>
