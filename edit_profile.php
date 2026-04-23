@@ -1,11 +1,25 @@
 <?php
     session_start();
 
+    include("db/connection.php");
+
     if(!isset($_SESSION["id"])){
         header("Location: welcome.php");
     }
 
-    include("db/connection.php");
+    // Checks if start_game has been completed for registered users
+    $stmt = $conn->prepare("
+        SELECT id FROM user_game_progress WHERE user_id = ?
+    ");
+    $stmt->bind_param("i", $_SESSION["id"]);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if($result->num_rows === 0){
+        header("Location: start_game.php");
+        exit();
+    }
+
     include("navbar.php");
 
     // Empty array for storing errors
@@ -119,42 +133,43 @@
 </head>
 <body>
     <span class="back-btn"><a class="back-btn-link" href="user_account.php">&#8617;</a></span>
-    
-    <div class="account-settings-container">
-        <!-- Added Decoration Ropes that visually holds up container -->
-        <span class="rope-decor-left"></span>
-        <span class="rope-decor-right"></span>
+    <div class="profile-flex-container">
+        <div class="account-settings-container">
+            <!-- Added Decoration Ropes that visually holds up container -->
+            <span class="rope-decor-left"></span>
+            <span class="rope-decor-right"></span>
 
-        <h2 class="account-settings-header">Edit Profile</h2>
-        <hr class="account-settings-hr">
-
-        <form class="profile-info" method="POST" enctype="multipart/form-data">
-            <img src="profile_pictures/<?php echo htmlspecialchars($user['profile_picture'] ?? 'default-pfp.jpg'); ?>" width="160px" height="160px" style="margin-bottom: 10px; border: 4px solid black; border-radius: 50%; object-fit: cover;
-            object-position: center;" alt="Profile Picture">
-            <p class="account-settings-text">Change Profile Picture:</p>
-            <input type="file" name="profile_picture" id="change-pfp-btn">
-
+            <h2 class="account-settings-header">Edit Profile</h2>
             <hr class="account-settings-hr">
 
-            <p class="user-account-info" style="font-size: 20px; margin-bottom: 4px;"><?= htmlspecialchars($user["username"]) ?></p>
-            <p class="account-settings-text">Change Username:</p>
-            <input type="text" name="new_username" id="change-username-input" placeholder="Enter new username">
+            <form class="profile-info" method="POST" enctype="multipart/form-data">
+                <img src="profile_pictures/<?php echo htmlspecialchars($user['profile_picture'] ?? 'default-pfp.jpg'); ?>" width="160px" height="160px" style="margin-bottom: 10px; border: 4px solid black; border-radius: 50%; object-fit: cover;
+                object-position: center;" alt="Profile Picture">
+                <p class="account-settings-text">Change Profile Picture:</p>
+                <input type="file" name="profile_picture" id="change-pfp-btn">
 
-            <hr class="account-settings-hr">
+                <hr class="account-settings-hr">
 
-            <input type="submit" name="save_changes" class="save-changes-btn" value="Save Changes">
+                <p class="user-account-info" style="font-size: 20px; margin-bottom: 4px;"><?= htmlspecialchars($user["username"]) ?></p>
+                <p class="account-settings-text">Change Username:</p>
+                <input type="text" name="new_username" id="change-username-input" placeholder="Enter new username">
 
-            <!-- Error output -->
-            <?php
-                if(count($errors) > 0){
-                    echo "<ul class='error-msg'>";
-                    foreach($errors as $error){
-                        echo "<li>" . $error . "</li>";
+                <hr class="account-settings-hr">
+
+                <input type="submit" name="save_changes" class="save-changes-btn" value="Save Changes">
+
+                <!-- Error output -->
+                <?php
+                    if(count($errors) > 0){
+                        echo "<ul class='error-msg'>";
+                        foreach($errors as $error){
+                            echo "<li>" . $error . "</li>";
+                        }
+                        echo "</ul>";
                     }
-                    echo "</ul>";
-                }
-            ?>
-        </form>
+                ?>
+            </form>
+        </div>
     </div>
 </body>
 </html>
