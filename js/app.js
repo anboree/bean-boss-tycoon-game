@@ -1,6 +1,7 @@
 // Game object
 const game = {
     money: 0,
+    beans: 250,
     day: 1,
     hour: 7, // Start at 7 AM
     minute: 0,
@@ -101,8 +102,66 @@ const upgrades = [
         icon: "assets/",
         description: "Unlocks Level 3, Increased rent price",
         owned: false
-    }
+    },
     // Level 3
+    {
+        key: "newMenu",
+        name: "New Menu",
+        cost: 5000,
+        level: 3,
+        icon: "assets/",
+        description: "+$2 per click",
+        owned: false
+    },
+    {
+        key: "advancedCoffeeMachine",
+        name: "Advanced Coffee Machine",
+        cost: 8000,
+        level: 3,
+        icon: "assets/",
+        description: "New, Earns $10 - $18 per click",
+        owned: false
+    },
+    {
+        key: "hireManager",
+        name: "Hire Manager",
+        cost: 500,
+        level: 3,
+        icon: "assets/",
+        description: "Earns $8 per 2 seconds",
+        owned: false
+    },
+    {
+        key: "betterBranding",
+        name: "Better Branding",
+        cost: 3500,
+        level: 3,
+        icon: "assets/",
+        description: "+25% more money",
+        owned: false
+    },
+    {
+        key: "mediumCoffeeShop",
+        name: "Medium Coffee Shop",
+        cost: 15000,
+        level: 3,
+        icon: "assets/",
+        description: "Unlocks Level 4, Increased rent price",
+        owned: false
+    }
+    // Level 4
+    // Level 5
+    // Level 6
+];
+
+// Bean Store
+const beanStore = [
+    { amount: 50, cost: 100 },
+    { amount: 100, cost: 190 },
+    { amount: 500, cost: 900 },
+    { amount: 1000, cost: 1700 },
+    { amount: 5000, cost: 5600 },
+    { amount: 10000, cost: 10500 }
 ];
 
 // All constants required for game
@@ -113,6 +172,8 @@ const brewBtn = document.getElementById("brewBtn");
 const pauseBtn = document.getElementById("pauseBtn");
 const activityBox = document.getElementById("activity-box");
 const upgradesContainer = document.getElementById("upgradesContainer");
+const beansSpan = document.getElementById("beans");
+const storeBox = document.getElementById("store-box");
 
 // Helper function for upgrades
 function getUpgrade(key){
@@ -138,6 +199,36 @@ function renderUpgrades(level){
         });
 }
 
+// Function for rendering Bean Store
+function renderBeanStore(){
+    beanStore.forEach(item => {
+        const btn = document.createElement("button");
+        btn.classList.add("storeBtn");
+
+        btn.textContent = `${item.amount} Beans - $${item.cost}`;
+
+        btn.onclick = () => buyBeans(item);
+
+        storeBox.appendChild(btn);
+    });
+}
+
+// Function for buying beans
+function buyBeans(item){
+    if(game.isPaused || !game.isOpen) return;
+
+    if(game.money >= item.cost){
+        game.money -= item.cost;
+        game.beans += item.amount;
+
+        addActivityMessage(`You bought ${item.amount} beans!`);
+        updateUI();
+    } 
+    else{
+        addActivityMessage("Not enough money!");
+    }
+}
+
 // Function for activity box messages
 function addActivityMessage(message) {
     const p = document.createElement("p");
@@ -149,17 +240,18 @@ function addActivityMessage(message) {
 }
 
 // Click value function
-function getClickValue() {
+function getClickValue(){
     let min = 1;
     let max = 1;
 
+    // LEVEL 1
     if(getUpgrade("coffeeMachine").owned){
         min = 1;
         max = 3;
     }
 
     if(getUpgrade("premiumBeans").owned){
-        if (getUpgrade("coffeeMachine").owned){
+        if(getUpgrade("coffeeMachine").owned){
             min = 3;
             max = 6;
         } else {
@@ -168,30 +260,52 @@ function getClickValue() {
         }
     }
 
-    let value = Math.floor(Math.random() * (max - min + 1)) + min;
-
-    // Business sign multiplier
-    if(getUpgrade("businessSign").owned){
-        value = Math.ceil(value * 1.1);
+    // LEVEL 2 (OVERRIDES LEVEL 1)
+    if(getUpgrade("espressoMachine").owned){
+        min = 5;
+        max = 10;
     }
 
-    return value;
+    // Multipliers
+    let value = Math.floor(Math.random() * (max - min + 1)) + min;
+
+    if(getUpgrade("businessSign").owned){
+        value *= 1.1;
+    }
+
+    if(getUpgrade("biggerBusinessSign").owned){
+        value *= 1.2;
+    }
+
+    return Math.ceil(value);
 }
 
 // Passive income
 setInterval(() => {
     if(game.isPaused || !game.isOpen) return;
 
+    let income = 0;
+
     if(getUpgrade("hireBarista").owned){
-        game.money += 1;
-        addActivityMessage("Your barista earned $1");
+        income += 1;
+    }
+
+    if(getUpgrade("hireFullTimeBarista").owned){
+        income += 4;
+    }
+
+    if(income > 0){
+        game.money += income;
+        addActivityMessage(`Your staff earned $${income}`);
         updateUI();
     }
+
 }, 2000);
 
 // Function to update money
 function updateUI(){
     moneySpan.textContent = game.money;
+    beansSpan.textContent = game.beans;
     daySpan.textContent = game.day;
     timeSpan.textContent = formatTime(game.hour, game.minute);
 }
@@ -259,6 +373,21 @@ setInterval(advanceTime, 300); // 0.3 seconds = 1 in-game minute
 brewBtn.addEventListener("click", function () {
     if(game.isPaused || !game.isOpen) return;
 
+    // Doesn't spam message
+    if(game.beans <= 0){
+        if(!game.noBeansMessageShown){
+            addActivityMessage("You don't have any more beans!");
+            game.noBeansMessageShown = true;
+        }
+        return;
+    } 
+    else{
+        game.noBeansMessageShown = false;
+    }
+
+    // Remove 1 bean per click
+    game.beans -= 1;
+
     const earned = getClickValue();
     game.money += earned;
 
@@ -267,14 +396,27 @@ brewBtn.addEventListener("click", function () {
 });
 
 // Upgrade buying logic
-function buyUpgrade(upgradeKey) {
+function buyUpgrade(upgradeKey){
     const upgrade = getUpgrade(upgradeKey);
 
     if(game.isPaused || !game.isOpen) return;
     if(upgrade.owned) return;
 
-    if(upgradeKey === "biggerCoffeeStand" && !canUnlockNextLevel()) {
-        addActivityMessage("You must buy all upgrades first!");
+    // Level 1 final upgrade
+    if(upgradeKey === "biggerCoffeeStand" && !canUnlockLevel2()) {
+        addActivityMessage("You must buy all Level 1 upgrades first!");
+        return;
+    }
+
+    // Level 2 final upgrade
+    if(upgradeKey === "smallCoffeeShop" && !canUnlockLevel3()) {
+        addActivityMessage("You must buy all Level 2 upgrades first!");
+        return;
+    }
+
+    // Checks if Espresso Beans are owned before purchasing Espresso Machine upgrade
+    if(upgradeKey === "espressoMachine" && !getUpgrade("espressoBeans").owned){
+        addActivityMessage("You need Espresso Beans first!");
         return;
     }
 
@@ -284,8 +426,12 @@ function buyUpgrade(upgradeKey) {
 
         addActivityMessage(`You bought ${upgrade.name}!`);
 
-        if (upgradeKey === "biggerCoffeeStand") {
+        if(upgradeKey === "biggerCoffeeStand"){
             unlockLevel2();
+        }
+
+        if(upgradeKey === "smallCoffeeShop"){
+            unlockLevel3();
         }
 
         updateUI();
@@ -295,8 +441,8 @@ function buyUpgrade(upgradeKey) {
     }
 }
 
-// Checks if all upgrades required for level 2 are owned
-function canUnlockNextLevel() {
+// Checks if all upgrades required for next level are owned
+function canUnlockLevel2(){
     return(
         getUpgrade("coffeeMachine").owned &&
         getUpgrade("businessSign").owned &&
@@ -305,10 +451,49 @@ function canUnlockNextLevel() {
     );
 }
 
-function unlockLevel2() {
+function canUnlockLevel3(){
+    return(
+        getUpgrade("espressoBeans").owned &&
+        getUpgrade("espressoMachine").owned &&
+        getUpgrade("hireFullTimeBarista").owned &&
+        getUpgrade("biggerBusinessSign").owned
+    );
+}
+
+function canUnlockLevel4(){
+    return(
+        getUpgrade("newMenu").owned &&
+        getUpgrade("advancedCoffeeMachine").owned &&
+        getUpgrade("hireManager").owned &&
+        getUpgrade("betterBranding").owned
+    );
+}
+
+function unlockLevel2(){
     addActivityMessage("🎉You unlocked Level 2!");
     renderUpgrades(2);
 }
 
+function unlockLevel3(){
+    addActivityMessage("🎉You unlocked Level 3!");
+    renderUpgrades(3);
+}
+
+function unlockLevel4(){
+    addActivityMessage("🎉You unlocked Level 4!");
+    renderUpgrades(4);
+}
+
+function unlockLevel5(){
+    addActivityMessage("🎉You unlocked Level 5!");
+    renderUpgrades(5);
+}
+
+function unlockLevel6(){
+    addActivityMessage("🎉You unlocked Level 6!");
+    renderUpgrades(6);
+}
+
 renderUpgrades(1);
+renderBeanStore();
 updateUI();
