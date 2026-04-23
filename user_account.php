@@ -1,11 +1,25 @@
 <?php
     session_start();
 
+    include("db/connection.php");
+
     if(!isset($_SESSION["id"])){
         header("Location: welcome.php");
     }
 
-    include("db/connection.php");
+    // Checks if start_game has been completed for registered users
+    $stmt = $conn->prepare("
+        SELECT id FROM user_game_progress WHERE user_id = ?
+    ");
+    $stmt->bind_param("i", $_SESSION["id"]);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if($result->num_rows === 0){
+        header("Location: start_game.php");
+        exit();
+    }
+
     include("navbar.php");
 
     $stmt = $conn->prepare("
@@ -47,28 +61,31 @@
 </head>
 <body>
     <span class="back-btn"><a class="back-btn-link" href="index.php">&#8617;</a></span>
-    <div class="profile-container">
-        <!-- Added Decoration Ropes that visually holds up container -->
-        <span class="rope-decor-left"></span>
-        <span class="rope-decor-right"></span>
-        <div class="profile-info">
-            <img src="profile_pictures/<?php echo htmlspecialchars($user['profile_picture'] ?? 'default-pfp.jpg'); ?>" width="220px" height="220px" style="margin-bottom: 10px; border: 4px solid black; border-radius: 50%; object-fit: cover;
-            object-position: center;" alt="Profile Picture">
+    <div class="profile-flex-container">
+        <div class="profile-container">
+            <!-- Added Decoration Ropes that visually holds up container -->
+            <span class="rope-decor-left"></span>
+            <span class="rope-decor-right"></span>
 
-            <hr class="user-account-hr">
+            <div class="profile-info">
+                <img src="profile_pictures/<?php echo htmlspecialchars($user['profile_picture'] ?? 'default-pfp.jpg'); ?>" width="220px" height="220px" style="margin-bottom: 10px; border: 4px solid black; border-radius: 50%; object-fit: cover;
+                object-position: center;" alt="Profile Picture">
 
-            <p class="user-account-info" id="user-account-username"><?= htmlspecialchars($user["username"]) ?></p>
+                <hr class="user-account-hr">
 
-            <hr class="user-account-hr">
+                <p class="user-account-info" id="user-account-username"><?= htmlspecialchars($user["username"]) ?></p>
 
-            <p class="user-account-info">Level: <?= htmlspecialchars($user["level"]) ?></p>
-            <p class="user-account-info">XP: <?= htmlspecialchars($user["xp"]) ?></p>
+                <hr class="user-account-hr">
 
-            <hr class="user-account-hr">
+                <p class="user-account-info">Level: <?= htmlspecialchars($user["level"]) ?></p>
+                <p class="user-account-info">XP: <?= htmlspecialchars($user["xp"]) ?></p>
 
-            <a class="user-account-info user-account-info-link" href="edit_profile.php">Edit Profile</a>
-            <a class="user-account-info user-account-info-link" href="user_account_settings.php">Account Settings</a>
-            <a class="user-account-info user-account-info-link" href="logout.php">Logout</a>
+                <hr class="user-account-hr">
+
+                <a class="user-account-info user-account-info-link" href="edit_profile.php">Edit Profile</a>
+                <a class="user-account-info user-account-info-link" href="user_account_settings.php">Account Settings</a>
+                <a class="user-account-info user-account-info-link" href="logout.php">Logout</a>
+            </div>
         </div>
     </div>
 </body>
