@@ -155,7 +155,7 @@
             // Unsetting the token after each successful registration
             unset($_SESSION["csrf_token"]);
             
-            header("Location: index.php");
+            header("Location: start_game.php");
         }
     }
 
@@ -195,6 +195,25 @@
 
                 <label class="label" for="confirm-password">Confirm password</label>
                 <input type="password" name="confirm-password" class="input" id="confirm-password" placeholder="Confirm your password">
+
+                <label id="show-password-label" for="show-password-toggle">Show Password:</label>
+                <input type="checkbox" id="show-password-toggle" onclick="showPassword()">
+
+                <!-- Show password function -->
+                <script>
+                    function showPassword(){
+                        var password = document.getElementById("password");
+                        var confirmPassword = document.getElementById("confirm-password");
+                        if(password.type === "password" && confirmPassword.type === "password"){
+                            password.type = "text";
+                            confirmPassword.type = "text";
+                        } 
+                        else{
+                            password.type = "password";
+                            confirmPassword.type = "password";
+                        }
+                    }
+                </script>
 
                 <!-- CSRF Token value -->
                 <input type="hidden" name="csrf_token" value="<?php echo $_SESSION["csrf_token"]; ?>">

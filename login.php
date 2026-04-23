@@ -97,6 +97,22 @@
                 <label class="label" for="username">Password</label>
                 <input type="password" name="password" class="input" id="password" placeholder="Enter your password">
 
+                <label id="show-password-label" for="show-password-toggle">Show Password:</label>
+                <input type="checkbox" id="show-password-toggle" onclick="showPassword()">
+
+                <!-- Show password function -->
+                <script>
+                    function showPassword(){
+                        var password = document.getElementById("password");
+                        if(password.type === "password"){
+                            password.type = "text";
+                        } 
+                        else{
+                            password.type = "password";
+                        }
+                    }
+                </script>
+
                 <!-- CSRF Token value -->
                 <input type="hidden" name="csrf_token" value="<?php echo $_SESSION["csrf_token"]; ?>">
 
