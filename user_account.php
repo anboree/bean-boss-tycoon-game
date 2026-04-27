@@ -25,9 +25,7 @@
     $stmt = $conn->prepare("
     SELECT 
         registered_users.username,
-        user_account_details.profile_picture,
-        user_account_details.level,
-        user_account_details.xp
+        user_account_details.profile_picture
     FROM registered_users
     INNER JOIN user_account_details
         ON registered_users.id = user_account_details.user_id
@@ -74,11 +72,6 @@
                 <hr class="user-account-hr">
 
                 <p class="user-account-info" id="user-account-username"><?= htmlspecialchars($user["username"]) ?></p>
-
-                <hr class="user-account-hr">
-
-                <p class="user-account-info">Level: <?= htmlspecialchars($user["level"]) ?></p>
-                <p class="user-account-info">XP: <?= htmlspecialchars($user["xp"]) ?></p>
 
                 <hr class="user-account-hr">
 
