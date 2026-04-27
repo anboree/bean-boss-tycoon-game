@@ -97,9 +97,7 @@
     $stmt = $conn->prepare("
     SELECT 
         registered_users.username,
-        user_account_details.profile_picture,
-        user_account_details.level,
-        user_account_details.xp
+        user_account_details.profile_picture
     FROM registered_users
     INNER JOIN user_account_details
         ON registered_users.id = user_account_details.user_id
