@@ -13,6 +13,7 @@
     --text-hover-color: #D4AF37;
     --button-color: #C97B43;
     --button-hover-color: #E2A76F;
+    --button-disabled-color: #777777;
     --game-containers-background-color: rgb(230, 230, 230);
     --money-color: rgb(0, 150, 0);
     --save-game-button-color: rgb(0, 185, 0);
@@ -397,6 +398,16 @@ body{
     box-shadow: none;
 }
 
+.upgradesBtn.purchased{
+    background-color: var(--button-disabled-color);
+    color: var(--text-color);
+    cursor: not-allowed;
+    box-shadow: none;
+}
+.upgradesBtn:disabled{
+    pointer-events: none;
+}
+
 #upgradesLevelText{
     font-family: "Nunito";
     font-size: 22px;
@@ -496,7 +507,7 @@ body{
     max-height: 500px;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 20px;
+    padding: 16px;
     text-align: center;
     border: 2px solid black;
     border-radius: 20px;
@@ -508,6 +519,30 @@ body{
     font-family: "Nunito";
     font-size: 22px;
     font-weight: bold;
+    display: block;
+    margin-bottom: 16px;
+}
+
+.storeBtn{
+    width: max-content;
+    padding: 5px;
+    background-color: var(--button-color);
+    font-family: "Nunito";
+    font-size: 12px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #8a4f2d;
+}
+.storeBtn:active{
+    transform: translateY(4px);
+    box-shadow: none;
+}
+.storeBtn:hover{
+    background-color: var(--button-hover-color);
 }
 
 .main-box, .upgrades-box, #activity-box, #save-load-box, #store-box{
@@ -627,6 +662,9 @@ body{
     text-decoration: none;
 }
 
+.user-account-info-link{
+    margin-top: 16px;
+}
 .user-account-info-link:hover{
     color: var(--text-hover-color);
 }
@@ -763,6 +801,19 @@ input:checked + .button::before{
 
 #check1, #check2, #check3, #check4{
     display: none;
+}
+
+#reset-game-button{
+    display: block;
+    margin: 12px auto 12px auto;
+    width: 200px;
+    padding: 5px;
+    font-family: "Nunito";
+    font-size: 18px;
+    font-weight: bold;
+    background-color: gold;
+    border: 3px solid black;
+    cursor: pointer;
 }
 
 #delete-account-button{
