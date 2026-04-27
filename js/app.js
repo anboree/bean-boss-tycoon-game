@@ -7,6 +7,7 @@ const game = {
     minute: 0,
     isOpen: true,
     isPaused: true,
+    noBeansMessageShown: false
 };
 
 // Upgrades
@@ -63,7 +64,7 @@ const upgrades = [
         name: "Espresso Beans",
         cost: 1200,
         level: 2,
-        icon: "assets/",
+        icon: "assets/espresso-beans-upgrade.png",
         description: "Unlocks Espresso Machine",
         owned: false
     },
@@ -72,7 +73,7 @@ const upgrades = [
         name: "Espresso Machine",
         cost: 2000,
         level: 2,
-        icon: "assets/",
+        icon: "assets/espresso-machine-upgrade.png",
         description: "New, Earns $5 - $10 per click",
         owned: false
     },
@@ -81,7 +82,7 @@ const upgrades = [
         name: "Full-Time Barista",
         cost: 200,
         level: 2,
-        icon: "assets/",
+        icon: "assets/hire-full-time-barista-upgrade.png",
         description: "Earns $4 per 2 seconds",
         owned: false
     },
@@ -90,7 +91,7 @@ const upgrades = [
         name: "Bigger Business Sign",
         cost: 600,
         level: 2,
-        icon: "assets/",
+        icon: "assets/bigger-business-sign-upgrade.png",
         description: "+20% more money",
         owned: false
     },
@@ -99,7 +100,7 @@ const upgrades = [
         name: "Small Coffee Shop",
         cost: 3000,
         level: 2,
-        icon: "assets/",
+        icon: "assets/small-coffee-shop-upgrade.png",
         description: "Unlocks Level 3, Increased rent price",
         owned: false
     },
@@ -124,7 +125,7 @@ const upgrades = [
     },
     {
         key: "hireManager",
-        name: "Hire Manager",
+        name: "Manager",
         cost: 500,
         level: 3,
         icon: "assets/",
@@ -148,10 +149,99 @@ const upgrades = [
         icon: "assets/",
         description: "Unlocks Level 4, Increased rent price",
         owned: false
-    }
+    },
     // Level 4
+    {
+        key: "onlineOrders",
+        name: "Online Orders",
+        cost: 12000,
+        level: 4,
+        icon: "assets/",
+        description: "Earns random passive income",
+        owned: false
+    },
+    {
+        key: "hireProBarista",
+        name: "Professional Barista",
+        cost: 1000,
+        level: 4,
+        icon: "assets/",
+        description: "Earns $12 per 2 seconds",
+        owned: false
+    },
+    {
+        key: "advertising",
+        name: "Local Advertising",
+        cost: 8000,
+        level: 4,
+        icon: "assets/",
+        description: "+30% more money",
+        owned: false
+    },
+    {
+        key: "betterOnlineServer",
+        name: "Better Online Server",
+        cost: 20000,
+        level: 4,
+        icon: "assets/",
+        description: "Increases income from online orders",
+        owned: false
+    },
+    {
+        key: "largeCoffeeShop",
+        name: "Large Coffee Shop",
+        cost: 40000,
+        level: 4,
+        icon: "assets/",
+        description: "Unlocks Level 5, Increased rent price",
+        owned: false
+    },
     // Level 5
-    // Level 6
+    {
+        key: "futuristicCoffeeMachine",
+        name: "Futuristic Coffee Machine",
+        cost: 30000,
+        level: 5,
+        icon: "assets/",
+        description: "Earns $15 - $25 per click",
+        owned: false
+    },
+    {
+        key: "socialMediaMarketing",
+        name: "Social Media Marketing",
+        cost: 20000,
+        level: 5,
+        icon: "assets/",
+        description: "+40% more money",
+        owned: false
+    },
+    {
+        key: "expandMenu",
+        name: "Expand Menu",
+        cost: 15000,
+        level: 5,
+        icon: "assets/",
+        description: "+$5 per click",
+        owned: false
+    },
+    {
+        key: "orderAutomation",
+        name: "Order Automation",
+        cost: 100000,
+        level: 5,
+        icon: "assets/",
+        description: "Auto click every 4 seconds",
+        owned: false
+    },
+    {
+        key: "coffeeEmpire",
+        name: "Coffee Empire",
+        cost: 1000000,
+        level: 5,
+        icon: "assets/",
+        description: "FINISHES THE GAME",
+        owned: false
+    }
 ];
 
 // Bean Store
@@ -185,18 +275,29 @@ function renderUpgrades(level){
     upgradesContainer.innerHTML = `<span id="upgradesLevelText">Level ${level} Upgrades</span>`;
 
     upgrades.filter(upg => upg.level === level).forEach(upg => {
-            const btn = document.createElement("button");
-            btn.classList.add("upgradesBtn");
+        const btn = document.createElement("button");
+        btn.classList.add("upgradesBtn");
 
+        // If owned then change appearance
+        if(upg.owned){
+            btn.classList.add("purchased");
+            btn.disabled = true;
+
+            btn.innerHTML = `
+                ${upg.name} - PURCHASED
+                <img src="${upg.icon}" width="50" height="50" style="display: block; margin: 0 auto">
+            `;
+        } else {
             btn.innerHTML = `
                 Buy ${upg.name} - $${upg.cost} (${upg.description})
                 <img src="${upg.icon}" width="50" height="50" style="display: block; margin: 0 auto">
             `;
 
             btn.onclick = () => buyUpgrade(upg.key);
+        }
 
-            upgradesContainer.appendChild(btn);
-        });
+        upgradesContainer.appendChild(btn);
+    });
 }
 
 // Function for rendering Bean Store
@@ -227,6 +328,25 @@ function buyBeans(item){
     else{
         addActivityMessage("Not enough money!");
     }
+}
+
+// Function that determines how many beans are removed with each click
+function getBeanCost(){
+    let cost = 1;
+
+    if(getUpgrade("espressoMachine").owned){
+        cost = 2;
+    }
+
+    if(getUpgrade("advancedCoffeeMachine").owned){
+        cost = 4;
+    }
+
+    if(getUpgrade("futuristicCoffeeMachine").owned){
+        cost = 8;
+    }
+
+    return cost;
 }
 
 // Function for activity box messages
@@ -266,6 +386,18 @@ function getClickValue(){
         max = 10;
     }
 
+    // LEVEL 3 (OVERRIDES LEVEL 2)
+    if(getUpgrade("advancedCoffeeMachine").owned){
+        min = 10;
+        max = 18;
+    }
+
+    // LEVEL 5 (OVERRIDES LEVEL 3)
+    if(getUpgrade("futuristicCoffeeMachine").owned){
+        min = 15;
+        max = 25;
+    }
+
     // Multipliers
     let value = Math.floor(Math.random() * (max - min + 1)) + min;
 
@@ -275,6 +407,26 @@ function getClickValue(){
 
     if(getUpgrade("biggerBusinessSign").owned){
         value *= 1.2;
+    }
+
+    if(getUpgrade("betterBranding").owned){
+        value *= 1.25;
+    }
+
+    if(getUpgrade("newMenu").owned){
+        value += 2;
+    }
+
+    if(getUpgrade("advertising").owned){
+        value *= 1.3;
+    }
+
+    if(getUpgrade("socialMediaMarketing").owned){
+        value *= 1.4;
+    }
+
+    if(getUpgrade("expandMenu").owned){
+        value += 5;
     }
 
     return Math.ceil(value);
@@ -294,13 +446,56 @@ setInterval(() => {
         income += 4;
     }
 
+    if(getUpgrade("hireManager").owned){
+        income += 8;
+    }
+
+    if(getUpgrade("hireProBarista").owned){
+        income += 12;
+    }
+
+    // Online Orders (random income)
+    if(getUpgrade("onlineOrders").owned){
+        let onlineIncome = Math.floor(Math.random() * 5) + 3; // $3 – $7
+
+        // Boost with server upgrade
+        if(getUpgrade("betterOnlineServer").owned){
+            onlineIncome *= 2;
+        }
+
+        income += onlineIncome;
+    }
+
     if(income > 0){
         game.money += income;
-        addActivityMessage(`Your staff earned $${income}`);
+        
+        if(Math.random() < 0.3){ // 30% chance to log (reducing spammy messages)
+            addActivityMessage(`Your business earned $${income}`);
+        }
+
         updateUI();
     }
 
 }, 2000);
+
+// Auto click logic for 'Order Automation' upgrade
+setInterval(() => {
+    if(game.isPaused || !game.isOpen) return;
+    if(!getUpgrade("orderAutomation").owned) return;
+
+    const beanCost = getBeanCost();
+
+    if(game.beans < beanCost) return;
+
+    game.beans -= beanCost;
+
+    const earned = getClickValue();
+    game.money += earned;
+
+    addActivityMessage(`Auto order earned $${earned}`);
+    updateUI();
+
+}, 4000);
 
 // Function to update money
 function updateUI(){
@@ -361,32 +556,86 @@ function advanceTime() {
 // End of day logic
 function endDay() {
     game.isOpen = false;
+    game.isPaused = true;
+    showEndOfDayPopup();
+}
+
+function showEndOfDayPopup(){
+    const rent = calculateRent();
+    const workerExpenses = calculateWorkerExpenses();
+    const total = rent + workerExpenses;
+
+    let message = `
+    END OF DAY ${game.day}
+    
+    Rent: ${rent}
+    Worker Expenses: ${workerExpenses}
+    Total: ${total}
+    `;
+
+    game.money -= total;
+
+    if(game.money < 0){
+        message += `\n\n⚠️You are in debt! Get it together or you will go bankrupt soon!⚠️`;
+    }
+
+    alert(message);
+    startNextDay();
+}
+
+function startNextDay(){
     game.day += 1;
     game.hour = 7;
     game.minute = 0;
     game.isOpen = true;
+    game.isPaused = false;
+
+    updateUI();
 }
 
 setInterval(advanceTime, 300); // 0.3 seconds = 1 in-game minute
+
+// Calculating end of day expenses
+function calculateRent(){
+    if(getUpgrade("largeCoffeeShop").owned) return 1200;
+    if(getUpgrade("mediumCoffeeShop").owned) return 500;
+    if(getUpgrade("smallCoffeeShop").owned) return 250;
+    if(getUpgrade("biggerCoffeeStand").owned) return 100;
+
+    return 50; // Base rent
+}
+
+function calculateWorkerExpenses(){
+    let workerExpenses = 0;
+
+    if(getUpgrade("hireBarista").owned) workerExpenses += 100;
+    if(getUpgrade("hireFullTimeBarista").owned) workerExpenses += 200;
+    if(getUpgrade("hireManager").owned) workerExpenses += 500;
+    if(getUpgrade("hireProBarista").owned) workerExpenses += 1000;
+
+    return workerExpenses;
+}
 
 // Added functionality for brew button
 brewBtn.addEventListener("click", function () {
     if(game.isPaused || !game.isOpen) return;
 
+    const beanCost = getBeanCost();
+
     // Doesn't spam message
-    if(game.beans <= 0){
+    if(game.beans < beanCost){
         if(!game.noBeansMessageShown){
-            addActivityMessage("You don't have any more beans!");
+            addActivityMessage(`You need ${beanCost} beans to brew coffee!`);
             game.noBeansMessageShown = true;
         }
         return;
-    } 
+    }
     else{
         game.noBeansMessageShown = false;
     }
 
-    // Remove 1 bean per click
-    game.beans -= 1;
+    // Remove beans
+    game.beans -= beanCost;
 
     const earned = getClickValue();
     game.money += earned;
@@ -414,6 +663,24 @@ function buyUpgrade(upgradeKey){
         return;
     }
 
+    // Level 3 final upgrade
+    if(upgradeKey === "mediumCoffeeShop" && !canUnlockLevel4()) {
+        addActivityMessage("You must buy all Level 3 upgrades first!");
+        return;
+    }
+
+    // Level 4 final upgrade
+    if(upgradeKey === "largeCoffeeShop" && !canUnlockLevel5()){
+        addActivityMessage("You must buy all Level 4 upgrades first!");
+        return;
+    }
+
+    // Level 5 final upgrade (final game upgrade)
+    if(upgradeKey === "coffeeEmpire" && !canFinishGame()){
+        addActivityMessage("You must buy all Level 5 upgrades first!");
+        return;
+    }
+
     // Checks if Espresso Beans are owned before purchasing Espresso Machine upgrade
     if(upgradeKey === "espressoMachine" && !getUpgrade("espressoBeans").owned){
         addActivityMessage("You need Espresso Beans first!");
@@ -423,6 +690,7 @@ function buyUpgrade(upgradeKey){
     if(game.money >= upgrade.cost){
         game.money -= upgrade.cost;
         upgrade.owned = true;
+        renderUpgrades(upgrade.level); // Re-renders upgrades after buying
 
         addActivityMessage(`You bought ${upgrade.name}!`);
 
@@ -432,6 +700,14 @@ function buyUpgrade(upgradeKey){
 
         if(upgradeKey === "smallCoffeeShop"){
             unlockLevel3();
+        }
+
+        if(upgradeKey === "mediumCoffeeShop"){
+            unlockLevel4();
+        }
+
+        if(upgradeKey === "largeCoffeeShop"){
+            unlockLevel5();
         }
 
         updateUI();
@@ -469,6 +745,24 @@ function canUnlockLevel4(){
     );
 }
 
+function canUnlockLevel5(){
+    return(
+        getUpgrade("onlineOrders").owned &&
+        getUpgrade("hireProBarista").owned &&
+        getUpgrade("advertising").owned &&
+        getUpgrade("betterOnlineServer").owned
+    );
+}
+
+function canFinishGame(){
+    return(
+        getUpgrade("futuristicCoffeeMachine").owned &&
+        getUpgrade("socialMediaMarketing").owned &&
+        getUpgrade("expandMenu").owned &&
+        getUpgrade("orderAutomation").owned
+    );
+}
+
 function unlockLevel2(){
     addActivityMessage("🎉You unlocked Level 2!");
     renderUpgrades(2);
@@ -489,9 +783,8 @@ function unlockLevel5(){
     renderUpgrades(5);
 }
 
-function unlockLevel6(){
-    addActivityMessage("🎉You unlocked Level 6!");
-    renderUpgrades(6);
+function finishGame(){
+    addActivityMessage("🎉YOU HAVE FINISHED THE GAME!!!");
 }
 
 renderUpgrades(1);
