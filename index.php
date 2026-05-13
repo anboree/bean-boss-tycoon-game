@@ -7,6 +7,15 @@
         header("Location: welcome.php");
     }
 
+    // Update last_active column in DB
+    $stmt = $conn->prepare("
+        UPDATE user_account_details 
+        SET last_active = NOW() 
+        WHERE user_id = ?
+    ");
+    $stmt->bind_param("i", $_SESSION["id"]);
+    $stmt->execute();
+
     // Checks if start_game has been completed for registered users
     $stmt = $conn->prepare("
         SELECT id FROM user_game_progress WHERE user_id = ?
@@ -92,10 +101,9 @@
                 <hr class="activity-box-hr">
             </div>
 
-            <!-- Save and Load buttons -->
-            <div id="save-load-box">
-                <input type="submit" name="save" id="save-game-btn" value="Save Game">
-                <input type="submit" name="load" id="load-game-btn" value="Load Game">
+            <!-- Save button -->
+            <div id="save-box">
+                <input type="submit" name="save" id="save-game-btn" value="Save Game" onclick="saveGame()">
             </div>
 
             <!-- Store box -->
