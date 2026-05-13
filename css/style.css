@@ -17,7 +17,6 @@
     --game-containers-background-color: rgb(230, 230, 230);
     --money-color: rgb(0, 150, 0);
     --save-game-button-color: rgb(0, 185, 0);
-    --load-game-button-color: rgb(0, 0, 220);
 }
 
 body{
@@ -274,7 +273,7 @@ body{
     grid-template-areas: 
     "main upgrades"
     "activity upgrades"
-    "saveload upgrades"
+    "save upgrades"
     "store store";
     gap: 20px;
 }
@@ -444,10 +443,10 @@ body{
     margin: 2px 0;
 }
 
-/* Save & Load */
-#save-load-box{
+/* Save */
+#save-box{
     width: 350px;
-    grid-area: saveload;
+    grid-area: save;
     height: max-content;
     padding: 10px;
     border: 2px solid black;
@@ -477,27 +476,6 @@ body{
 }
 #save-game-btn:hover{
     background-color: rgb(0, 135, 0);
-}
-
-#load-game-btn{
-    cursor: pointer;
-    padding: 8px;
-    border: none;
-    border-radius: 10px;
-    font-family: "Nunito";
-    font-size: 14px;
-    font-weight: bold;
-    box-shadow: 0 4px 0 rgb(0, 0, 85);
-    transition: all 0.1s ease;
-    background-color: var(--load-game-button-color);
-    color: var(--text-color);
-}
-#load-game-btn:active{
-    transform: translateY(4px);
-    box-shadow: none;
-}
-#load-game-btn:hover{
-    background-color: rgb(0, 0, 170);
 }
 
 /* Store box */
@@ -545,7 +523,7 @@ body{
     background-color: var(--button-hover-color);
 }
 
-.main-box, .upgrades-box, #activity-box, #save-load-box, #store-box{
+.main-box, .upgrades-box, #activity-box, #save-box, #store-box{
     box-shadow: 0 6px 0 black;
     background: linear-gradient(to bottom, #BBB5A2, #9f9987);
 }
@@ -1011,14 +989,14 @@ input:checked + .button::before{
         "activity"
         "upgrades"
         "store"
-        "saveload";
+        "save";
     }
 
     #store-box{
         width: 350px;
     }
 
-    #save-load-box{
+    #save-box{
         margin-bottom: 100px;
     }
 
