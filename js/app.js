@@ -5,6 +5,7 @@ const game = {
     day: 1,
     hour: 7, // Start at 7 AM
     minute: 0,
+    upgradeLevel: 1,
     isOpen: true,
     isPaused: true,
     noBeansMessageShown: false
@@ -110,7 +111,7 @@ const upgrades = [
         name: "New Menu",
         cost: 5000,
         level: 3,
-        icon: "assets/",
+        icon: "assets/new-menu-upgrade.png",
         description: "+$2 per click",
         owned: false
     },
@@ -119,7 +120,7 @@ const upgrades = [
         name: "Advanced Coffee Machine",
         cost: 8000,
         level: 3,
-        icon: "assets/",
+        icon: "assets/advanced-coffee-machine-upgrade.png",
         description: "New, Earns $10 - $18 per click",
         owned: false
     },
@@ -128,7 +129,7 @@ const upgrades = [
         name: "Manager",
         cost: 500,
         level: 3,
-        icon: "assets/",
+        icon: "assets/hire-manager-upgrade.png",
         description: "Earns $8 per 2 seconds",
         owned: false
     },
@@ -137,7 +138,7 @@ const upgrades = [
         name: "Better Branding",
         cost: 3500,
         level: 3,
-        icon: "assets/",
+        icon: "assets/better-branding-upgrade.png",
         description: "+25% more money",
         owned: false
     },
@@ -165,7 +166,7 @@ const upgrades = [
         name: "Professional Barista",
         cost: 1000,
         level: 4,
-        icon: "assets/",
+        icon: "assets/hire-pro-barista-upgrade.png",
         description: "Earns $12 per 2 seconds",
         owned: false
     },
@@ -236,7 +237,7 @@ const upgrades = [
     {
         key: "coffeeEmpire",
         name: "Coffee Empire",
-        cost: 1000000,
+        cost: 250000,
         level: 5,
         icon: "assets/",
         description: "FINISHES THE GAME",
@@ -492,7 +493,7 @@ setInterval(() => {
     const earned = getClickValue();
     game.money += earned;
 
-    addActivityMessage(`Auto order earned $${earned}`);
+    addActivityMessage(`Auto order earned $${earned}!`);
     updateUI();
 
 }, 4000);
@@ -568,12 +569,16 @@ function showEndOfDayPopup(){
     let message = `
     END OF DAY ${game.day}
     
-    Rent: ${rent}
-    Worker Expenses: ${workerExpenses}
-    Total: ${total}
+    Rent: $${rent}
+    Worker Expenses: $${workerExpenses}
+    Total: $${total}
     `;
 
     game.money -= total;
+
+    if(game.money <= -3000){
+        gameOverPopup();
+    }
 
     if(game.money < 0){
         message += `\n\n⚠️You are in debt! Get it together or you will go bankrupt soon!⚠️`;
@@ -582,6 +587,16 @@ function showEndOfDayPopup(){
     alert(message);
     startNextDay();
 }
+
+// Function for 'Game Over' logic
+function gameOverPopup(){
+    let message = "YOU HAVE GONE OVER $3K IN DEBT! YOU ARE NOW BANKRUPT! The game will be automatically reset now.";
+
+    alert(message);
+    resetGame();
+}
+
+// Function to automatically reset game
 
 function startNextDay(){
     game.day += 1;
@@ -696,18 +711,26 @@ function buyUpgrade(upgradeKey){
 
         if(upgradeKey === "biggerCoffeeStand"){
             unlockLevel2();
+            game.upgradeLevel = 2;
         }
 
         if(upgradeKey === "smallCoffeeShop"){
             unlockLevel3();
+            game.upgradeLevel = 3;
         }
 
         if(upgradeKey === "mediumCoffeeShop"){
             unlockLevel4();
+            game.upgradeLevel = 4;
         }
 
         if(upgradeKey === "largeCoffeeShop"){
             unlockLevel5();
+            game.upgradeLevel = 5;
+        }
+
+        if(upgradeKey === "coffeeEmpire"){
+            finishGame();
         }
 
         updateUI();
@@ -785,8 +808,70 @@ function unlockLevel5(){
 
 function finishGame(){
     addActivityMessage("🎉YOU HAVE FINISHED THE GAME!!!");
+
+    let message = `
+    CONGRATULATIONS!
+    
+    You have finished Bean Boss in it's current state!
+
+    Now you can choose to keep playing and maintaining a top spot on the leaderboard. 
+    OR you can reset the game through your account settings and start a fresh coffee business.
+
+    The choice is yours!`;
+
+    alert(message);
 }
 
-renderUpgrades(1);
-renderBeanStore();
-updateUI();
+setInterval(() => {
+    if(game.isPaused || !game.isOpen) return;
+    saveGame();
+}, 30000);
+
+function saveGame(){
+    const formData = new FormData();
+
+    formData.append("progress", JSON.stringify(game));
+    formData.append("upgrades", JSON.stringify(upgrades));
+
+    fetch("save_game.php", {
+        method: "POST",
+        body: formData
+    })
+        .then(res => res.text())
+        .then(data => {
+            if (data === "success"){
+                addActivityMessage("Game saved");
+            } 
+            else{
+                addActivityMessage("Save failed");
+            }
+        });
+}
+
+function loadGame(){
+    fetch("load_game.php")
+        .then(res => res.json())
+        .then(data => {
+            Object.assign(game, data.progress);
+
+            data.upgrades.forEach(savedUpgrade => {
+
+                const localUpgrade = upgrades.find(
+                    upgrade => upgrade.key === savedUpgrade.key
+                );
+
+                if(localUpgrade){
+                    localUpgrade.owned = savedUpgrade.owned;
+                }
+            });
+
+            console.log(game);
+            console.log(upgrades);
+
+            renderUpgrades(game.upgradeLevel);
+            renderBeanStore();
+            updateUI();
+        });
+}
+
+loadGame();
