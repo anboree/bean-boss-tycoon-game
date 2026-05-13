@@ -39,7 +39,7 @@
             $hour = 7;
             $minute = 0;
             $money = 0;
-            $beans = 0;
+            $beans = 250;
             $upgrade_level = 1;
 
             $conn->begin_transaction();
@@ -73,7 +73,27 @@
                     "businessSign",
                     "hireBarista",
                     "premiumBeans",
-                    "biggerCoffeeStand"
+                    "biggerCoffeeStand",
+                    "espressoBeans",
+                    "espressoMachine",
+                    "hireFullTimeBarista",
+                    "biggerBusinessSign",
+                    "smallCoffeeShop",
+                    "newMenu",
+                    "advancedCoffeeMachine",
+                    "hireManager",
+                    "betterBranding",
+                    "mediumCoffeeShop",
+                    "onlineOrders",
+                    "hireProBarista",
+                    "advertising",
+                    "betterOnlineServer",
+                    "largeCoffeeShop",
+                    "futuristicCoffeeMachine",
+                    "socialMediaMarketing",
+                    "expandMenu",
+                    "orderAutomation",
+                    "coffeeEmpire"
                 ];
 
                 foreach($defaultUpgrades as $upgradeKey){
