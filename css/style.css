@@ -191,7 +191,7 @@ body{
     margin: 0 auto;
 }
 
-#register-btn, #login-btn, #start-game-btn{
+#register-btn, #login-btn, #start-game-btn, #admin-logout-btn, #add-user-btn{
     cursor: pointer;
     display: block;
     margin: 0 auto 0 auto;
@@ -205,7 +205,7 @@ body{
     font-weight: bold;
     background-color: var(--button-color);
 }
-#register-btn:hover, #login-btn:hover, #start-game-btn:hover{
+#register-btn:hover, #login-btn:hover, #start-game-btn:hover, #admin-logout-btn:hover, #add-user-btn:hover{
     background-color: var(--button-hover-color);
 }
 
@@ -851,6 +851,96 @@ input:checked + .button::before{
 #start-game-btn{
     width: 160px;
     padding: 8px;
+}
+
+/* Admin Panel */
+.admin-flex-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#admin-panel-heading{
+    font-family: "Press Start 2P";
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.admin-panel-container{
+    width: 75rem;
+    border: 4px solid black;
+    background-color: var(--secondary-background-color);
+    padding: 16px;
+}
+
+#admin-panel-table{
+    width: 100%;
+    text-align: center;
+    border-collapse: collapse;
+}
+
+.admin-panel-header, .admin-panel-data{
+    border: 2px solid var(--background-color);
+    color: var(--text-color);
+    font-family: "Nunito";
+    padding: 8px;
+}
+
+.admin-panel-header{
+    font-size: 18px;
+}
+
+#admin-view-btn, #admin-edit-btn, #admin-delete-btn{
+    width: max-content;
+    padding: 6px;
+    border: none;
+    border-radius: 10px;
+}
+
+#admin-view-btn, #admin-edit-btn{
+    background-color: gold;
+    margin-right: 5px;
+}
+
+#admin-delete-btn{
+    background-color: red;
+}
+
+#admin-view-link, #admin-edit-link, #admin-delete-link{
+    text-decoration: none;
+    font-family: "Nunito";
+    font-weight: bold;
+}
+
+#admin-view-link, #admin-edit-link{
+    color: black;
+}
+
+#admin-delete-link{
+    color: var(--text-color);
+}
+
+#pagination-container{
+    width: max-content;
+    margin: 16px auto 0 auto;
+    background-color: var(--button-color);
+    border-radius: 10px;
+    padding: 2px;
+}
+
+.pagination-btn{
+    text-decoration: none;
+    color: black;
+    font-family: "Nunito";
+    font-weight: bold;
+    margin: 0 2px;
+}
+
+.pagination-btn:hover{
+    text-decoration: underline;
+    color: blue;
 }
 
 /* Responsive design */
