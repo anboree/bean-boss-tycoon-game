@@ -8,7 +8,8 @@ const game = {
     upgradeLevel: 1,
     isOpen: true,
     isPaused: true,
-    noBeansMessageShown: false
+    noBeansMessageShown: false,
+    beanShortageMessageShown: false
 };
 
 // Upgrades
@@ -147,7 +148,7 @@ const upgrades = [
         name: "Medium Coffee Shop",
         cost: 15000,
         level: 3,
-        icon: "assets/",
+        icon: "assets/medium-coffee-shop-upgrade.png",
         description: "Unlocks Level 4, Increased rent price",
         owned: false
     },
@@ -157,7 +158,7 @@ const upgrades = [
         name: "Online Orders",
         cost: 12000,
         level: 4,
-        icon: "assets/",
+        icon: "assets/online-orders-upgrade.png",
         description: "Earns random passive income",
         owned: false
     },
@@ -175,7 +176,7 @@ const upgrades = [
         name: "Local Advertising",
         cost: 8000,
         level: 4,
-        icon: "assets/",
+        icon: "assets/local-advertising-upgrade.png",
         description: "+30% more money",
         owned: false
     },
@@ -184,7 +185,7 @@ const upgrades = [
         name: "Better Online Server",
         cost: 20000,
         level: 4,
-        icon: "assets/",
+        icon: "assets/better-online-server-upgrade.png",
         description: "Increases income from online orders",
         owned: false
     },
@@ -193,7 +194,7 @@ const upgrades = [
         name: "Large Coffee Shop",
         cost: 40000,
         level: 4,
-        icon: "assets/",
+        icon: "assets/large-coffee-shop-upgrade.png",
         description: "Unlocks Level 5, Increased rent price",
         owned: false
     },
@@ -203,7 +204,7 @@ const upgrades = [
         name: "Futuristic Coffee Machine",
         cost: 30000,
         level: 5,
-        icon: "assets/",
+        icon: "assets/futuristic-coffee-machine-upgrade.png",
         description: "Earns $15 - $25 per click",
         owned: false
     },
@@ -212,7 +213,7 @@ const upgrades = [
         name: "Social Media Marketing",
         cost: 20000,
         level: 5,
-        icon: "assets/",
+        icon: "assets/social-media-marketing-upgrade.png",
         description: "+40% more money",
         owned: false
     },
@@ -221,7 +222,7 @@ const upgrades = [
         name: "Expand Menu",
         cost: 15000,
         level: 5,
-        icon: "assets/",
+        icon: "assets/expand-menu-upgrade.png",
         description: "+$5 per click",
         owned: false
     },
@@ -230,7 +231,7 @@ const upgrades = [
         name: "Order Automation",
         cost: 100000,
         level: 5,
-        icon: "assets/",
+        icon: "assets/order-automation-upgrade.png",
         description: "Auto click every 4 seconds",
         owned: false
     },
@@ -239,9 +240,62 @@ const upgrades = [
         name: "Coffee Empire",
         cost: 250000,
         level: 5,
-        icon: "assets/",
+        icon: "assets/coffee-empire-upgrade.png",
         description: "FINISHES THE GAME",
         owned: false
+    }
+];
+
+// Random events
+const randomEvents = [
+    {
+        name: "Blogger Review (+$100)",
+        effect: () => {
+            game.money += 100;
+            addActivityMessage("A blogger promoted your shop!");
+        }
+    },
+    {
+        name: "Power Outage (-$40)",
+        effect: () => {
+            game.money -= 40;
+            addActivityMessage("A power outage slowed business!");
+        }
+    },
+    {
+        name: "Happy Customers (+$150)",
+        effect: () => {
+            game.money += 150;
+            addActivityMessage("Customers loved your coffee!");
+        }
+    },
+    {
+        name: "Bad Weather (-$80)",
+        effect: () => {
+            game.money -= 80;
+            addActivityMessage("Less customers came in due to bad weather!");
+        }
+    },
+    {
+        name: "Bean Supplier Discount (+200 Beans)",
+        effect: () => {
+            game.beans += 200;
+            addActivityMessage("Your supplier gave you bonus beans!");
+        }
+    },
+    {
+        name: "Equipment repair (-$75)",
+        effect: () => {
+            game.money -= 75;
+            addActivityMessage("Some equipment needed repairing!");
+        }
+    },
+    {
+        name: "Customer Tips (+$90)",
+        effect: () => {
+            game.money += 90;
+            addActivityMessage("Customers left you tips!");
+        }
     }
 ];
 
@@ -347,7 +401,23 @@ function getBeanCost(){
         cost = 8;
     }
 
+    beanShortage();
+
     return cost;
+}
+
+// Warns user if they are running low on beans
+function beanShortage(){
+    if(game.beans < 50){
+        if(!game.beanShortageMessageShown){
+            addActivityMessage("LOW BEANS WARNING!");
+        }
+        game.beanShortageMessageShown = true;
+        return;
+    }
+    else{
+        game.noBeansMessageShown = false;
+    }
 }
 
 // Function for activity box messages
@@ -541,13 +611,13 @@ function advanceTime() {
 
     game.minute += 1;
 
-    if (game.minute >= 60) {
+    if(game.minute >= 60){
         game.minute = 0;
         game.hour += 1;
     }
 
     // Close shop at 6 PM (18:00)
-    if (game.hour >= 18) {
+    if(game.hour >= 18){
         endDay();
     }
 
@@ -564,6 +634,7 @@ function endDay() {
 function showEndOfDayPopup(){
     const rent = calculateRent();
     const workerExpenses = calculateWorkerExpenses();
+    const randomEvent = chooseRandomEvent();
     const total = rent + workerExpenses;
 
     let message = `
@@ -571,13 +642,19 @@ function showEndOfDayPopup(){
     
     Rent: $${rent}
     Worker Expenses: $${workerExpenses}
+    Random Event: ${randomEvent}
     Total: $${total}
     `;
 
     game.money -= total;
 
     if(game.money <= -3000){
+        game.isOpen = false;
+        game.isPaused = true;
+
         gameOverPopup();
+
+        return; // STOPS THE FUNCTION
     }
 
     if(game.money < 0){
@@ -597,6 +674,21 @@ function gameOverPopup(){
 }
 
 // Function to automatically reset game
+function resetGame(){
+    fetch("reset_game.php", {
+        method: "POST"
+    })
+        .then(res => res.text())
+        .then(data => {
+            if(data === "success"){
+                // Reload page
+                location.reload();
+            } 
+            else{
+                alert("Reset failed!");
+            }
+        });
+}
 
 function startNextDay(){
     game.day += 1;
@@ -631,6 +723,20 @@ function calculateWorkerExpenses(){
     return workerExpenses;
 }
 
+function chooseRandomEvent(){
+    if(Math.random() < 0.2){
+        const randomEventPicker = randomEvents[
+            Math.floor(Math.random() * randomEvents.length)
+        ];
+
+        randomEventPicker.effect();
+        return randomEventPicker.name;
+    }
+    else{
+        return "None";
+    }
+}
+
 // Added functionality for brew button
 brewBtn.addEventListener("click", function () {
     if(game.isPaused || !game.isOpen) return;
@@ -641,8 +747,9 @@ brewBtn.addEventListener("click", function () {
     if(game.beans < beanCost){
         if(!game.noBeansMessageShown){
             addActivityMessage(`You need ${beanCost} beans to brew coffee!`);
-            game.noBeansMessageShown = true;
+            
         }
+        game.noBeansMessageShown = true;
         return;
     }
     else{
@@ -820,6 +927,31 @@ function finishGame(){
     The choice is yours!`;
 
     alert(message);
+}
+
+// Background music
+const bgMusic = document.getElementById("bgMusic");
+
+if(musicEnabled === 1){
+    alert("Click anywhere to enable background music.");
+
+    function startMusic(){
+        bgMusic.play()
+            .then(() => {
+                console.log("Music started");
+            })
+            .catch(() => {
+                console.log("Autoplay blocked");
+            })
+
+        // Remove listeners after first interaction
+        document.removeEventListener("click", startMusic);
+        document.removeEventListener("keydown", startMusic);
+    }
+
+    // Wait for first user interaction
+    document.addEventListener("click", startMusic);
+    document.addEventListener("keydown", startMusic);
 }
 
 setInterval(() => {
