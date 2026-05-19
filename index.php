@@ -113,6 +113,35 @@
         </div>
     </div>
 
+    <?php
+        // Checks if background music should be playing
+        $stmt = $conn->prepare("
+            SELECT background_music 
+            FROM user_account_preferences 
+            WHERE user_id = ?
+        ");
+
+        $stmt->bind_param("i", $_SESSION["id"]);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        if($result->num_rows > 0){
+            $row = $result->fetch_assoc();
+
+            if($row['background_music'] == 1){
+                echo '<audio id="bgMusic" loop>
+                        <source src="assets/bean-boss-background-music.mp3" type="audio/mpeg">
+                    </audio>';
+            }
+        }
+        $stmt->close();
+    ?>
+
+    <script>
+        const musicEnabled = <?php echo $row['background_music']; ?>;
+    </script>
+
     <script src="js/app.js"></script>
 </body>
 </html>
