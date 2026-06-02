@@ -8,7 +8,7 @@
     }
 
     // Pagination
-    $usersPerPage = 6;
+    $usersPerPage = 5;
     $page = isset($_GET['page']) ? $_GET['page'] : 1;
 
     if($page < 1){
@@ -60,7 +60,7 @@
     <!-- Link to CSS file -->
     <link rel="stylesheet" href="../css/style.css">
 </head>
-<body>
+<body id="admin-body">
     <div class="admin-flex-container">
         <h1 id="admin-panel-heading">Dashboard</h1>
         <div class="admin-panel-container">
@@ -84,9 +84,9 @@
                     <td class="admin-panel-data"><img src="../profile_pictures/<?= $user['profile_picture'] ?>" width="50" height="50"></td>
                     <td class="admin-panel-data"><?= $user['registration_date'] ?></td>
                     <td class="admin-panel-data"><?= $user['last_active'] ?></td>
-                    <td class="admin-panel-data"><button id="admin-view-btn"><a id="admin-view-link" href="view_user.php">View</a></button>
+                    <td class="admin-panel-data"><button id="admin-view-btn"><a id="admin-view-link" href="view_user.php?id=<?= $user['id'] ?>">View</a></button>
                                                  <button id="admin-edit-btn"><a id="admin-edit-link" href="edit_user.php">Edit</a></button>
-                                                 <button id="admin-delete-btn"><a id="admin-delete-link" href="delete_user.php?id=<?= $user['id'] ?>" onclick="return confirm('Are you sure you want to delete this user?')">Delete</a></button>
+                                                 <button id="admin-delete-btn"><a id="admin-delete-link" href="delete_user.php?id=<?= $user['id'] ?>" onclick="return confirm('Are you sure you want to ban this user?')">Ban</a></button>
                     </td>
                 </tr>
 
