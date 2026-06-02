@@ -8,7 +8,7 @@
 
     $conn->begin_transaction();
 
-    try {
+    try{
         $stmt = $conn->prepare("
             UPDATE user_game_progress SET day = ?, hour = ?, minute = ?, money = ?, beans = ?, upgrade_level = ? WHERE user_id = ?
         ");
@@ -33,7 +33,7 @@
             WHERE user_id = ? AND upgrade_key = ?
         ");
 
-        foreach ($upgrades as $upgrade) {
+        foreach($upgrades as $upgrade){
             $owned = $upgrade['owned'] ? 1 : 0;
 
             $stmt->bind_param(
@@ -49,7 +49,8 @@
         $stmt->close();
         $conn->commit();
         echo "success";
-    } catch (Exception $e) {
+    }
+    catch(Exception $exception){
         $conn->rollback();
         echo "error";
     }
