@@ -342,7 +342,8 @@ function renderUpgrades(level){
                 ${upg.name} - PURCHASED
                 <img src="${upg.icon}" width="50" height="50" style="display: block; margin: 0 auto">
             `;
-        } else {
+        } 
+        else{
             btn.innerHTML = `
                 Buy ${upg.name} - $${upg.cost} (${upg.description})
                 <img src="${upg.icon}" width="50" height="50" style="display: block; margin: 0 auto">
@@ -445,7 +446,8 @@ function getClickValue(){
         if(getUpgrade("coffeeMachine").owned){
             min = 3;
             max = 6;
-        } else {
+        } 
+        else{
             min = 3;
             max = 3;
         }
@@ -590,12 +592,11 @@ function updatePauseUI(){
 
 pauseBtn.addEventListener("click", function () {
     game.isPaused = !game.isPaused;
-
     updatePauseUI();
 });
 
 // Time formatting
-function formatTime(hour, minute) {
+function formatTime(hour, minute){
     let ampm = hour >= 12 ? "PM" : "AM";
     let displayHour = hour % 12;
     if (displayHour === 0) displayHour = 12;
@@ -606,7 +607,7 @@ function formatTime(hour, minute) {
 }
 
 // Clock system
-function advanceTime() {
+function advanceTime(){
     if(game.isPaused) return;
 
     game.minute += 1;
@@ -625,7 +626,7 @@ function advanceTime() {
 }
 
 // End of day logic
-function endDay() {
+function endDay(){
     game.isOpen = false;
     game.isPaused = true;
     showEndOfDayPopup();
@@ -774,19 +775,19 @@ function buyUpgrade(upgradeKey){
     if(upgrade.owned) return;
 
     // Level 1 final upgrade
-    if(upgradeKey === "biggerCoffeeStand" && !canUnlockLevel2()) {
+    if(upgradeKey === "biggerCoffeeStand" && !canUnlockLevel2()){
         addActivityMessage("You must buy all Level 1 upgrades first!");
         return;
     }
 
     // Level 2 final upgrade
-    if(upgradeKey === "smallCoffeeShop" && !canUnlockLevel3()) {
+    if(upgradeKey === "smallCoffeeShop" && !canUnlockLevel3()){
         addActivityMessage("You must buy all Level 2 upgrades first!");
         return;
     }
 
     // Level 3 final upgrade
-    if(upgradeKey === "mediumCoffeeShop" && !canUnlockLevel4()) {
+    if(upgradeKey === "mediumCoffeeShop" && !canUnlockLevel4()){
         addActivityMessage("You must buy all Level 3 upgrades first!");
         return;
     }
@@ -971,7 +972,7 @@ function saveGame(){
     })
         .then(res => res.text())
         .then(data => {
-            if (data === "success"){
+            if(data === "success"){
                 addActivityMessage("Game saved");
             } 
             else{
