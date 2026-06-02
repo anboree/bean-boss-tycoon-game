@@ -188,7 +188,7 @@
     <!-- Link to CSS file -->
     <link rel="stylesheet" href="../css/style.css">
 </head>
-<body>
+<body id="admin-body">
     <span class="back-btn"><a class="back-btn-link" href="admin_panel.php">&#8617;</a></span>
     <div class="container">
         <div class="form-container">
