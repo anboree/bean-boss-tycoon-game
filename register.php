@@ -119,8 +119,8 @@
 
                 // Insert account details
                 $stmt = $conn->prepare("
-                    INSERT INTO user_account_details (user_id, level, xp)
-                    VALUES (?, 1, 0)
+                    INSERT INTO user_account_details (user_id)
+                    VALUES (?)
                 ");
                 $stmt->bind_param("i", $newUserId);
                 $stmt->execute();
@@ -143,7 +143,7 @@
                 // Remove CSRF token after success
                 unset($_SESSION["csrf_token"]);
 
-                header("Location: index.php");
+                header("Location: start_game.php");
                 exit;
             } 
             catch(Exception $e){
