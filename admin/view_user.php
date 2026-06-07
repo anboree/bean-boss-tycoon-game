@@ -3,9 +3,12 @@
 
     include("../db/connection.php");
 
-    if(!isset($_SESSION["admin_id"])){
-        header("Location: admin_login.php");
+    if(!isset($_SESSION["id"])){
+        header("Location: ../welcome.php");
     }
+
+    include("../ban_check.php");
+    include("admin_check.php");
 
     // Checks if ID exists
     if(!isset($_GET['id'])){
@@ -22,9 +25,7 @@
 
     $result = $conn->prepare("
         SELECT
-            registered_users.id,
             registered_users.username,
-            user_game_progress.user_id,
             user_game_progress.business_name,
             user_game_progress.day,
             user_game_progress.hour,
@@ -88,7 +89,7 @@
                     <td class="admin-panel-data"><?= $user["day"] ?></td>
                     <td class="admin-panel-data"><?= $user["hour"] ?></td>
                     <td class="admin-panel-data"><?= $user["minute"] ?></td>
-                    <td class="admin-panel-data"><?= $user["money"] ?></td>
+                    <td class="admin-panel-data">$<?= $user["money"] ?></td>
                     <td class="admin-panel-data"><?= $user["beans"] ?></td>
                     <td class="admin-panel-data"><?= $user["upgrade_level"] ?></td>
                 </tr>
