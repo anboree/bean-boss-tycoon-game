@@ -505,6 +505,30 @@ function getClickValue(){
     return Math.ceil(value);
 }
 
+// Animation for "Brew Coffee" button
+function coffeeAnimation(){
+    if(game.isPaused || !game.isOpen) return;
+
+    const coffee = document.createElement("div");
+    coffee.classList.add("flying-coffee");
+
+    const button = document.getElementById("brewBtn");
+    const rect = button.getBoundingClientRect();
+
+    coffee.style.left = rect.left + rect.width / 3 + "px";
+    coffee.style.top = rect.top + "px";
+
+    document.body.appendChild(coffee);
+
+    setTimeout(() => {
+        coffee.remove();
+    }, 1000);
+}
+
+document.getElementById("brewBtn").addEventListener("click", () => {
+    coffeeAnimation();
+});
+
 // Passive income
 setInterval(() => {
     if(game.isPaused || !game.isOpen) return;
@@ -662,16 +686,35 @@ function showEndOfDayPopup(){
         message += `\n\n⚠️You are in debt! Get it together or you will go bankrupt soon!⚠️`;
     }
 
-    alert(message);
-    startNextDay();
+    showPopup(message, startNextDay);
+}
+
+function showPopup(message, callback = null){
+    const overlay = document.getElementById("popupOverlay");
+    const content = document.getElementById("popupContent");
+
+    content.textContent = message;
+    overlay.style.display = "flex";
+
+    overlay.callback = callback;
+}
+
+function closePopup(){
+    const overlay = document.getElementById("popupOverlay");
+
+    overlay.style.display = "none";
+
+    if(overlay.callback){
+        overlay.callback();
+        overlay.callback = null;
+    }
 }
 
 // Function for 'Game Over' logic
 function gameOverPopup(){
     let message = "YOU HAVE GONE OVER $3K IN DEBT! YOU ARE NOW BANKRUPT! The game will be automatically reset now.";
 
-    alert(message);
-    resetGame();
+    showPopup(message, resetGame);
 }
 
 // Function to automatically reset game
@@ -916,25 +959,29 @@ function unlockLevel5(){
 
 function finishGame(){
     addActivityMessage("🎉YOU HAVE FINISHED THE GAME!!!");
+    game.isPaused = true;
+    updatePauseUI();
 
     let message = `
     CONGRATULATIONS!
     
     You have finished Bean Boss in it's current state!
 
-    Now you can choose to keep playing and maintaining a top spot on the leaderboard. 
+    Now you can choose to keep playing and maintaining a top spot on the leaderboard.
+
     OR you can reset the game through your account settings and start a fresh coffee business.
 
     The choice is yours!`;
 
-    alert(message);
+    showPopup(message);
 }
 
 // Background music
 const bgMusic = document.getElementById("bgMusic");
 
 if(musicEnabled === 1){
-    alert("Click anywhere to enable background music.");
+    let message = "Click anywhere to enable background music."
+    showPopup(message);
 
     function startMusic(){
         bgMusic.play()
