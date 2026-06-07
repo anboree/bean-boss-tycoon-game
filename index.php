@@ -7,6 +7,8 @@
         header("Location: welcome.php");
     }
 
+    include("ban_check.php");
+
     // Update last_active column in DB
     $stmt = $conn->prepare("
         UPDATE user_account_details 
@@ -66,6 +68,7 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body id="index-body">
+    <div id="coffee-animation-container"></div>
     <!-- Game Container -->
     <div class="gameContainer">
 
@@ -110,6 +113,13 @@
             <div id="store-box">
                 <span id="store-box-header">Bean Store</span>
             </div>
+        </div>
+    </div>
+
+    <div id="popupOverlay" class="popup-overlay">
+        <div class="popup">
+            <div id="popupContent"></div>
+            <button onclick="closePopup()">OK</button>
         </div>
     </div>
 
