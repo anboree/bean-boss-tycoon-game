@@ -3,9 +3,12 @@
 
     include("../db/connection.php");
 
-    if(!isset($_SESSION["admin_id"])){
-        header("Location: admin_login.php");
+    if(!isset($_SESSION["id"])){
+        header("Location: ../welcome.php");
     }
+
+    include("../ban_check.php");
+    include("admin_check.php");
 
     // Array for storing errors
     $errors = [];
@@ -25,6 +28,9 @@
         }
         elseif(strlen($username) > 64){
             $errors["username"] = "Please don't enter more than 64 characters for your username!";
+        }
+        elseif(!preg_match('/^[\w ]+$/', $username)){
+            $errors["username"] = "You can only use letters, numbers and underscore for your username!";
         }
 
         // Email validation
@@ -76,6 +82,9 @@
         elseif(strlen($business_name) > 255){
             $errors["business-name"] = "Business name cannot be longer than 255 characters!";
         }
+        elseif(!preg_match('/^[\w ]+$/', $business_name)){
+            $errors["business-name"] = "You can only use letters, numbers and underscore for your business name!";
+        }
 
         // Image upload
         if(isset($_FILES['profile_picture']) && $_FILES['profile_picture']['error'] === 0){
@@ -93,80 +102,145 @@
             }
         }
 
-        // Start transaction if no errors
         if(count($errors) == 0){
-            $conn->begin_transaction();
+            // Checks if username already exists in DB
+            $stmt = $conn->prepare("SELECT id FROM registered_users WHERE username = ?");
+            $stmt->bind_param("s", $username);
+            $stmt->execute();
+            $stmt->store_result();
 
-            try{
-                // Insert into registered_users
-                $stmt = $conn->prepare("
-                    INSERT INTO registered_users
-                    (username, email, password, registration_date)
-                    VALUES (?, ?, ?, ?)
-                ");
-
-                $stmt->bind_param(
-                    "ssss",
-                    $username,
-                    $email,
-                    $hashed_password,
-                    $registration_date
-                );
-
-                $stmt->execute();
-
-                $userId = $stmt->insert_id;
-
-                $stmt->close();
-
-                // Insert into user_account_details
-                $stmt = $conn->prepare("
-                    INSERT INTO user_account_details
-                    (user_id, profile_picture, last_active)
-                    VALUES (?, ?, ?)
-                ");
-
-                $stmt->bind_param(
-                    "iss",
-                    $userId,
-                    $profilePicture,
-                    $registration_date
-                );
-
-                $stmt->execute();
-                $stmt->close();
-
-                // Insert into user_account_preferences
-                $stmt = $conn->prepare("
-                    INSERT INTO user_account_preferences (user_id)
-                    VALUES (?)
-                ");
-                $stmt->bind_param("i", $userId);
-                $stmt->execute();
-                $stmt->close();
-
-                // Insert default game progress
-                $stmt = $conn->prepare("
-                    INSERT INTO user_game_progress
-                    (user_id, business_name, day, hour, minute, money, beans, upgrade_level)
-                    VALUES (?, ?, 1, 7, 0, 0, 250, 1)
-                ");
-
-                $stmt->bind_param("is",
-                                  $userId,
-                                  $business_name);
-
-                $stmt->execute();
-                $stmt->close();
-
-                $conn->commit();
-
-                header("Location: admin_panel.php");
-                exit();
+            if($stmt->num_rows > 0){
+                $errors["username"] = "Username is already registered!";
             }
-            catch (Exception $e){
-                $conn->rollback();
-                echo "Error adding user.";
+            $stmt->close();
+
+            // Checks if email already exists in DB
+            $stmt = $conn->prepare("SELECT id FROM registered_users WHERE email = ?");
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $stmt->store_result();
+
+            if($stmt->num_rows > 0){
+                $errors["email"] = "Email is already registered!";
+            }
+            $stmt->close();
+
+            // Start transaction if no errors
+            if(count($errors) == 0){
+
+                $conn->begin_transaction();
+
+                try{
+                    // Insert into registered_users
+                    $stmt = $conn->prepare("
+                        INSERT INTO registered_users
+                        (username, email, password, registration_date)
+                        VALUES (?, ?, ?, ?)
+                    ");
+
+                    $stmt->bind_param(
+                        "ssss",
+                        $username,
+                        $email,
+                        $hashed_password,
+                        $registration_date
+                    );
+
+                    $stmt->execute();
+
+                    $userId = $stmt->insert_id;
+
+                    $stmt->close();
+
+                    // Insert into user_account_details
+                    $stmt = $conn->prepare("
+                        INSERT INTO user_account_details
+                        (user_id, profile_picture, last_active)
+                        VALUES (?, ?, ?)
+                    ");
+
+                    $stmt->bind_param(
+                        "iss",
+                        $userId,
+                        $profilePicture,
+                        $registration_date
+                    );
+
+                    $stmt->execute();
+                    $stmt->close();
+
+                    // Insert into user_account_preferences
+                    $stmt = $conn->prepare("
+                        INSERT INTO user_account_preferences (user_id)
+                        VALUES (?)
+                    ");
+                    $stmt->bind_param("i", $userId);
+                    $stmt->execute();
+                    $stmt->close();
+
+                    // Insert default game progress
+                    $stmt = $conn->prepare("
+                        INSERT INTO user_game_progress
+                        (user_id, business_name, day, hour, minute, money, beans, upgrade_level)
+                        VALUES (?, ?, 1, 7, 0, 0, 250, 1)
+                    ");
+
+                    $stmt->bind_param("is",
+                                    $userId,
+                                    $business_name);
+
+                    $stmt->execute();
+                    $stmt->close();
+
+                    // Insert upgrades
+                    $defaultUpgrades = [
+                        "coffeeMachine",
+                        "businessSign",
+                        "hireBarista",
+                        "premiumBeans",
+                        "biggerCoffeeStand",
+                        "espressoBeans",
+                        "espressoMachine",
+                        "hireFullTimeBarista",
+                        "biggerBusinessSign",
+                        "smallCoffeeShop",
+                        "newMenu",
+                        "advancedCoffeeMachine",
+                        "hireManager",
+                        "betterBranding",
+                        "mediumCoffeeShop",
+                        "onlineOrders",
+                        "hireProBarista",
+                        "advertising",
+                        "betterOnlineServer",
+                        "largeCoffeeShop",
+                        "futuristicCoffeeMachine",
+                        "socialMediaMarketing",
+                        "expandMenu",
+                        "orderAutomation",
+                        "coffeeEmpire"
+                    ];
+
+                    foreach($defaultUpgrades as $upgradeKey){
+                        $stmt = $conn->prepare("
+                            INSERT INTO user_upgrades (user_id, upgrade_key, owned)
+                            VALUES (?, ?, 0)
+                        ");
+
+                        $stmt->bind_param("is", $userId, $upgradeKey);
+                        $stmt->execute();
+                        $stmt->close();
+                    }
+
+                    $conn->commit();
+
+                    header("Location: admin_panel.php");
+                    exit();
+                }
+                catch (Exception $exception){
+                    $conn->rollback();
+                    echo "Error adding user.";
+                }
             }
         }
     }
@@ -195,16 +269,16 @@
             <p class="register-login-heading">Add User</h1>
             <form method="post" class="form" enctype="multipart/form-data">
                 <label class="label" for="username">Username</label>
-                <input type="text" name="username" class="input" id="username" placeholder="Choose a username" value="<?= $username ?? '' ?>">
+                <input type="text" name="username" class="input admin-input" id="username" placeholder="Choose a username" value="<?= $username ?? '' ?>">
 
                 <label class="label" for="email">Email</label>
-                <input type="text" name="email" class="input" id="email" placeholder="Enter your email address" value="<?= $email ?? '' ?>">
+                <input type="text" name="email" class="input admin-input" id="email" placeholder="Enter your email address" value="<?= $email ?? '' ?>">
 
                 <label class="label" for="password">Password</label>
-                <input type="password" name="password" class="input" id="password" placeholder="Create a password">
+                <input type="password" name="password" class="input admin-input" id="password" placeholder="Create a password">
 
                 <label class="label" for="confirm-password">Confirm password</label>
-                <input type="password" name="confirm-password" class="input" id="confirm-password" placeholder="Confirm your password">
+                <input type="password" name="confirm-password" class="input admin-input" id="confirm-password" placeholder="Confirm your password">
 
                 <label id="show-password-label" for="show-password-toggle">Show Password:</label>
                 <input type="checkbox" id="show-password-toggle" onclick="showPassword()">
