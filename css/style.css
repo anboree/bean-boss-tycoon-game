@@ -26,6 +26,11 @@ body{
     height: 100vh;
 }
 
+#admin-body{
+    background-image: none;
+    background-color: var(--background-color);
+}
+
 /* Rope Decoration */
 .rope-decor-left{
     width: 10px;
@@ -191,7 +196,7 @@ body{
     margin: 0 auto;
 }
 
-#register-btn, #login-btn, #start-game-btn, #admin-logout-btn, #add-user-btn{
+#register-btn, #login-btn, #start-game-btn, #add-user-btn, #confirm-btn{
     cursor: pointer;
     display: block;
     margin: 0 auto 0 auto;
@@ -205,7 +210,7 @@ body{
     font-weight: bold;
     background-color: var(--button-color);
 }
-#register-btn:hover, #login-btn:hover, #start-game-btn:hover, #admin-logout-btn:hover, #add-user-btn:hover{
+#register-btn:hover, #login-btn:hover, #start-game-btn:hover, #add-user-btn:hover, #confirm-btn:hover{
     background-color: var(--button-hover-color);
 }
 
@@ -333,30 +338,77 @@ body{
     box-shadow: none;
 }
 
+/* Animation for brew button */
+#coffee-animation-container{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.flying-coffee{
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-image: url("../assets/coffee-cup-icon.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    animation: coffeeFloat 1s ease-out forwards;
+}
+
+@keyframes coffeeFloat{
+    0%{
+        opacity: 1;
+        transform: translateY(-18px) scale(0.8);
+    }
+
+    100%{
+        opacity: 0;
+        transform: translateY(-120px) scale(1.2);
+    }
+}
+
+.popup-overlay{
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.popup{
+    background: var(--background-color);
+    padding: 20px;
+    border-radius: 10px;
+    min-width: 300px;
+    max-width: 500px;
+    text-align: center;
+    font-family: "Nunito";
+    white-space: pre-line;
+    border: 4px solid black;
+}
+
+.popup button{
+    margin-top: 15px;
+    padding: 10px 20px;
+    cursor: pointer;
+    background-color: var(--button-color);
+    font-family: "Nunito";
+    font-weight: bold;
+    border: 2px solid black;
+    border-radius: 6px;
+}
+.popup button:hover{
+    background-color: var(--button-hover-color);
+}
+
 #pauseBtn{
     display: block;
     width: 20px;
     cursor: pointer;
     margin: 17px auto 0 auto;
-}
-
-.money-popup {
-    position: absolute;
-    font-family: "Nunito";
-    font-weight: bold;
-    color: green;
-    pointer-events: none;
-    animation: floatUp 0.8s ease-out;
-}
-@keyframes floatUp {
-    0% {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    100% {
-        opacity: 0;
-        transform: translateY(-40px);
-    }
 }
 
 /* Upgrades */
@@ -528,8 +580,8 @@ body{
     background: linear-gradient(to bottom, #BBB5A2, #9f9987);
 }
 
-/* welcome.php */
-.welcome-main-container{
+/* welcome.php AND ban_message.php */
+.welcome-main-container, .ban-message-main-container{
     height: 85vh;
     width: 100%;
     display: flex;
@@ -537,7 +589,11 @@ body{
     align-items: center;
 }
 
-.welcome-sub-container{
+.ban-message-main-container{
+    height: 100vh;
+}
+
+.welcome-sub-container, .ban-message-sub-container{
     width: 680px;
     background-color: var(--secondary-background-color);
     border: 4px solid black;
@@ -546,14 +602,19 @@ body{
     text-align: center;
 }
 
-#welcome-header{
+#welcome-header, #ban-message-header{
     font-family: "Press Start 2P";
     color: var(--text-color);
     font-size: 28px;
     margin-bottom: 5px;
 }
 
-#welcome-tagline{
+#ban-message-header{
+    font-size: 26px;
+    margin-bottom: 20px;
+}
+
+#welcome-tagline, #ban-message-text{
     font-family: "Nunito";
     color: var(--text-color);
     font-size: 18px;
@@ -607,6 +668,7 @@ body{
 #welcome-login-link:hover{
     color: var(--button-hover-color);
 }
+
 
 /* user_account.php */
 .profile-flex-container{
@@ -781,6 +843,24 @@ input:checked + .button::before{
     display: none;
 }
 
+.change-email-password-button{
+    display: block;
+    margin: 12px auto 12px auto;
+    width: 200px;
+    padding: 5px;
+    font-family: "Nunito";
+    font-size: 18px;
+    font-weight: bold;
+    background-color: var(--background-color);
+    border: 3px solid black;
+    cursor: pointer;
+}
+
+.change-email-password-link{
+    text-decoration: none;
+    color: black;
+}
+
 #reset-game-button{
     display: block;
     margin: 12px auto 12px auto;
@@ -815,6 +895,41 @@ input:checked + .button::before{
     border-radius: 20px;
     margin: 40px auto 0 auto;
     background-color: var(--secondary-background-color);
+    padding: 10px 0;
+}
+
+#leaderboard-heading{
+    font-family: "Press Start 2P";
+    font-size: 28px;
+    color: var(--text-color);
+    width: 100%;
+    text-align: center;
+    margin: 10px 0;
+}
+
+#leaderboard-hr{
+    width: 350px;
+    color: var(--text-color);
+    margin-top: 5px;
+    margin: 0 auto 0 auto;
+}
+
+#leaderboard-table{
+    width: 90%;
+    text-align: center;
+    border-collapse: collapse;
+    margin: 15px auto 0 auto;
+}
+
+.leaderboard-table-header, .leaderboard-table-data{
+    border: 2px solid var(--background-color);
+    color: var(--text-color);
+    font-family: "Nunito";
+    padding: 8px;
+}
+
+.leaderboard-table-header{
+    font-size: 18px;
 }
 
 /* start_game.php */
@@ -875,7 +990,7 @@ input:checked + .button::before{
     padding: 16px;
 }
 
-#admin-panel-table{
+#admin-panel-table, #view-user-table{
     width: 100%;
     text-align: center;
     border-collapse: collapse;
@@ -943,6 +1058,23 @@ input:checked + .button::before{
     color: blue;
 }
 
+.active-pagination-btn{
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+#remove-pfp-btn{
+    display: block;
+    margin: 5px auto 0 auto;
+    padding: 4px;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--background-color);
+    font-family: "Nunito";
+    font-weight: bold;
+    cursor: pointer;
+}
+
 /* Responsive design */
 @media screen and (max-width: 800px){
     .rope-decor-left, .rope-decor-right{
@@ -973,15 +1105,15 @@ input:checked + .button::before{
     }
 
     /* welcome.php */
-    .welcome-sub-container{
+    .welcome-sub-container, .ban-message-sub-container{
         width: 95%;
     }
 
-    #welcome-header{
+    #welcome-header, #ban-message-header{
         font-size: 20px;
     }
 
-    #welcome-tagline{
+    #welcome-tagline, #ban-message-text{
         font-size: 16px;
     }
 
@@ -1055,6 +1187,10 @@ input:checked + .button::before{
         font-size: 16px;
     }
 
+    .account-settings-input{
+        margin-right: 32px;
+    }
+
     /* index.php */
     #index-body{
         height: max-content;
@@ -1100,6 +1236,28 @@ input:checked + .button::before{
 
     .leaderboard-container{
         width: 90%;
+        padding: 4px;
+    }
+
+    #leaderboard-heading{
+        font-size: 24px;
+    }
+
+    #leaderboard-hr{
+        width: 300px;
+    }
+
+    .leaderboard-table-header, .leaderboard-table-data{
+        padding: 1px;
+        border: 1px solid var(--background-color);
+    }
+
+    .leaderboard-table-header{
+        font-size: 14px;
+    }
+
+    .leaderboard-table-data{
+        font-size: 12px;
     }
 
     /* start_game.php */
@@ -1109,6 +1267,34 @@ input:checked + .button::before{
 
     #start-game-label{
         font-size: 20px;
+    }
+
+    /* Admin panel */
+    #admin-panel-heading{
+        font-size: 24px;
+        text-align: center;
+    }
+
+    .admin-panel-container{
+        width: 100%;
+        padding: 4px;
+    }
+
+    .admin-panel-header, .admin-panel-data{
+        padding: 2px;
+        border: 1px solid var(--background-color);
+    }
+
+    .admin-panel-header{
+        font-size: 14px;
+    }
+
+    .admin-panel-data{
+        font-size: 12px;
+    }
+
+    .admin-input{
+        margin-right: 32px;
     }
 }
 
