@@ -3,9 +3,12 @@
 
     include("../db/connection.php");
 
-    if(!isset($_SESSION["admin_id"])){
-        header("Location: admin_login.php");
+    if(!isset($_SESSION["id"])){
+        header("Location: ../welcome.php");
     }
+
+    include("../ban_check.php");
+    include("admin_check.php");
 
     // Pagination
     $usersPerPage = 5;
@@ -34,6 +37,7 @@
             registered_users.email,
             registered_users.registration_date,
             user_account_details.profile_picture,
+            user_account_details.is_banned,
             user_account_details.last_active
         FROM registered_users
         INNER JOIN user_account_details
@@ -85,8 +89,14 @@
                     <td class="admin-panel-data"><?= $user['registration_date'] ?></td>
                     <td class="admin-panel-data"><?= $user['last_active'] ?></td>
                     <td class="admin-panel-data"><button id="admin-view-btn"><a id="admin-view-link" href="view_user.php?id=<?= $user['id'] ?>">View</a></button>
-                                                 <button id="admin-edit-btn"><a id="admin-edit-link" href="edit_user.php">Edit</a></button>
-                                                 <button id="admin-delete-btn"><a id="admin-delete-link" href="delete_user.php?id=<?= $user['id'] ?>" onclick="return confirm('Are you sure you want to ban this user?')">Ban</a></button>
+                                                 <button id="admin-edit-btn"><a id="admin-edit-link" href="edit_user.php?id=<?= $user['id'] ?>">Edit</a></button>
+                                                 <?php if($user['is_banned'] == 1) : ?>
+                                                    <button id="admin-delete-btn"><a id="admin-delete-link" href="unban_user.php?id=<?= $user['id'] ?>" onclick="return confirm('Are you sure you want to unban this user?')">Unban</a></button>
+                                                 <?php elseif($user['id'] == $_SESSION["id"]) : ?>
+                                                    <button style="display: none"></button>
+                                                 <?php else : ?>
+                                                    <button id="admin-delete-btn"><a id="admin-delete-link" href="ban_user.php?id=<?= $user['id'] ?>" onclick="return confirm('Are you sure you want to ban this user?')">Ban</a></button>
+                                                 <?php endif; ?>
                     </td>
                 </tr>
 
@@ -97,14 +107,13 @@
             <!-- Pagination output -->
             <div id="pagination-container">
                 <?php for($i = 1; $i <= $totalPages; $i++) : ?>
-                    <a class="pagination-btn" href="?page=<?= $i ?>"><?= $i ?></a>
+                    <a class="pagination-btn <?= isset($_GET['page']) && $_GET['page'] == $i ? 'active-pagination-btn' : '' ?>" href="?page=<?= $i ?>"><?= $i ?></a>
                 <?php endfor; ?>
             </div>
 
         </div>
 
         <button id="add-user-btn" style="border: 2px solid black; margin-top: 10px;"><a style="text-decoration: none; color: black;" href="add_user.php">Add User</a></button>
-        <button id="admin-logout-btn" style="border: 2px solid black;"><a style="text-decoration: none; color: black;" href="admin_logout.php">Logout</a></button>
 
     </div>
 </body>
