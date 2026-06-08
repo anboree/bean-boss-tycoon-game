@@ -7,8 +7,9 @@
         header("Location: ../welcome.php");
     }
 
-    include("../ban_check.php");
+    include("ban_check.php");
     include("admin_check.php");
+    include("start_game_check.php");
 
     // Pagination
     $usersPerPage = 5;
@@ -114,6 +115,7 @@
         </div>
 
         <button id="add-user-btn" style="border: 2px solid black; margin-top: 10px;"><a style="text-decoration: none; color: black;" href="add_user.php">Add User</a></button>
+        <button id="add-user-btn" style="border: 2px solid black; margin-top: 10px;"><a style="text-decoration: none; color: black;" href="send_email.php">Send Email</a></button>
 
     </div>
 </body>
