@@ -7,6 +7,8 @@
         header("Location: welcome.php");
     }
 
+    include("ban_check.php");
+
     $errors = [];
 
     // Prevents access to this file if already completed
@@ -31,6 +33,9 @@
         }
         elseif(strlen($business_name) > 255){
             $errors["business-name"] = "Business name cannot be longer than 255 characters!";
+        }
+        elseif(!preg_match('/^[\p{L}\p{N}_ ]+$/u', $business_name)){
+            $errors["business-name"] = "You can only use letters, numbers and underscore for your business name!";
         }
 
         if(count($errors) == 0){
