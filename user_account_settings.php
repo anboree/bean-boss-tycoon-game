@@ -7,18 +7,8 @@
         header("Location: welcome.php");
     }
 
-    // Checks if start_game has been completed for registered users
-    $stmt = $conn->prepare("
-        SELECT id FROM user_game_progress WHERE user_id = ?
-    ");
-    $stmt->bind_param("i", $_SESSION["id"]);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if($result->num_rows === 0){
-        header("Location: start_game.php");
-        exit();
-    }
+    include("ban_check.php");
+    include("start_game_check.php");
 
     include("navbar.php");
 
@@ -36,11 +26,10 @@
         WHERE user_id = ?
     ");
 
-        $stmt->bind_param("iiii", 
-        $email_updates, 
-        $show_on_leaderboard, 
-        $sound_effects,
-        $background_music, 
+        $stmt->bind_param("iiii",
+        $email_updates,
+        $show_on_leaderboard,
+        $background_music,
         $user_id
     );
 
@@ -187,7 +176,7 @@
 
                     <p class="account-settings-option">Show your profile on the leaderboard <span class="account-settings-button"><input type="checkbox" name="show_on_leaderboard" id="check2" <?= ($preferences["show_on_leaderboard"] == 1) ? "checked" : "" ?>><label for="check2" class="button"></label></span></p>
 
-                    <p class="account-settings-option">Enable background music <span class="account-settings-button"><input type="checkbox" name="background_music" id="check4" <?= ($preferences["background_music"] == 1) ? "checked" : "" ?>><label for="check3" class="button"></label></span></p>
+                    <p class="account-settings-option">Enable background music <span class="account-settings-button"><input type="checkbox" name="background_music" id="check3" <?= ($preferences["background_music"] == 1) ? "checked" : "" ?>><label for="check3" class="button"></label></span></p>
                 
                     <input type="submit" name="save_changes" id="account-settings-save-btn" class="save-changes-btn" value="Save Changes">
             </form>
@@ -195,6 +184,12 @@
 
             <h2 class="account-settings-header">Other Settings</h2>
             <hr class="account-settings-hr">
+
+            <!-- Change Email option -->
+            <button class="change-email-password-button"><a class="change-email-password-link" href="change_email.php">Change Email</a></button>
+
+            <!-- Change Password option -->
+            <button class="change-email-password-button"><a class="change-email-password-link" href="change_password.php">Change Password</a></button>
 
             <!-- Reset Game option -->
             <form method="POST" onsubmit="return confirmReset()">
