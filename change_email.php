@@ -8,6 +8,7 @@
     }
 
     include("ban_check.php");
+    include("start_game_check.php");
 
     // Query to get necessary user data
     $result = $conn->prepare("

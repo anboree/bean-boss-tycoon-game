@@ -8,6 +8,7 @@
     }
 
     include("ban_check.php");
+    include("start_game_check.php");
 
     // Empty array for storing form errors
     $errors = [];
