@@ -7,8 +7,9 @@
         header("Location: ../welcome.php");
     }
 
-    include("../ban_check.php");
+    include("ban_check.php");
     include("admin_check.php");
+    include("start_game_check.php");
 
     // Array for storing errors
     $errors = [];
@@ -29,7 +30,7 @@
         elseif(strlen($username) > 64){
             $errors["username"] = "Please don't enter more than 64 characters for your username!";
         }
-        elseif(!preg_match('/^[\w ]+$/', $username)){
+        elseif(!preg_match('/^[\p{L}\p{N}_ ]+$/u', $username)){
             $errors["username"] = "You can only use letters, numbers and underscore for your username!";
         }
 
@@ -82,7 +83,7 @@
         elseif(strlen($business_name) > 255){
             $errors["business-name"] = "Business name cannot be longer than 255 characters!";
         }
-        elseif(!preg_match('/^[\w ]+$/', $business_name)){
+        elseif(!preg_match('/^[\p{L}\p{N}_ ]+$/u', $business_name)){
             $errors["business-name"] = "You can only use letters, numbers and underscore for your business name!";
         }
 
