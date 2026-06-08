@@ -7,25 +7,16 @@
         header("Location: welcome.php");
     }
 
-    // Checks if start_game has been completed for registered users
-    $stmt = $conn->prepare("
-        SELECT id FROM user_game_progress WHERE user_id = ?
-    ");
-    $stmt->bind_param("i", $_SESSION["id"]);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if($result->num_rows === 0){
-        header("Location: start_game.php");
-        exit();
-    }
+    include("ban_check.php");
+    include("start_game_check.php");
 
     include("navbar.php");
 
     $stmt = $conn->prepare("
     SELECT 
         registered_users.username,
-        user_account_details.profile_picture
+        user_account_details.profile_picture,
+        user_account_details.is_admin
     FROM registered_users
     INNER JOIN user_account_details
         ON registered_users.id = user_account_details.user_id
@@ -77,6 +68,11 @@
 
                 <a class="user-account-info user-account-info-link" href="edit_profile.php">Edit Profile</a>
                 <a class="user-account-info user-account-info-link" href="user_account_settings.php">Account Settings</a>
+                <?php
+                    if($user["is_admin"] === 1){
+                        echo "<a class='user-account-info user-account-info-link' href='admin/admin_panel.php' target='_blank'>Admin Dashboard</a>";
+                    }
+                ?>
                 <a class="user-account-info user-account-info-link" href="logout.php">Logout</a>
             </div>
         </div>
