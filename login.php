@@ -103,7 +103,7 @@
                 <!-- Show password function -->
                 <script>
                     function showPassword(){
-                        var password = document.getElementById("password");
+                        let password = document.getElementById("password");
                         if(password.type === "password"){
                             password.type = "text";
                         } 
