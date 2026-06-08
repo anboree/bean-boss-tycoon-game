@@ -7,18 +7,8 @@
         header("Location: welcome.php");
     }
 
-    // Checks if start_game has been completed for registered users
-    $stmt = $conn->prepare("
-        SELECT id FROM user_game_progress WHERE user_id = ?
-    ");
-    $stmt->bind_param("i", $_SESSION["id"]);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if($result->num_rows === 0){
-        header("Location: start_game.php");
-        exit();
-    }
+    include("ban_check.php");
+    include("start_game_check.php");
 
     include("navbar.php");
 
@@ -30,7 +20,7 @@
 
         // Username update
         if(!empty($_POST["new_username"])){
-            $newUsername = trim($_POST["new_username"]);
+            $newUsername = filter_var($_POST["new_username"], FILTER_SANITIZE_SPECIAL_CHARS);
             $user_id = $_SESSION["id"];
 
             // Check if username already exists (except current user)
@@ -46,7 +36,10 @@
 
             if($checkResult->num_rows > 0){
                 $errors["new_username"] = "Username already exists!";
-            } 
+            }
+            elseif(!preg_match('/^[\p{L}\p{N}_ ]+$/u', $newUsername)){
+                $errors["new_username"] = "You can only use letters, numbers and underscore for your username!";
+            }
             else{
                 $updateStmt = $conn->prepare("
                     UPDATE registered_users 
@@ -95,13 +88,13 @@
     }
 
     $stmt = $conn->prepare("
-    SELECT 
-        registered_users.username,
-        user_account_details.profile_picture
-    FROM registered_users
-    INNER JOIN user_account_details
-        ON registered_users.id = user_account_details.user_id
-    WHERE registered_users.id = ?
+        SELECT 
+            registered_users.username,
+            user_account_details.profile_picture
+        FROM registered_users
+        INNER JOIN user_account_details
+            ON registered_users.id = user_account_details.user_id
+        WHERE registered_users.id = ?
     ");
     $stmt->bind_param("i", $_SESSION["id"]);
     $stmt->execute();
