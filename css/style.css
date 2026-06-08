@@ -184,6 +184,12 @@ body{
     font-family: "Nunito";
 }
 
+#message{
+    border: 2px solid black;
+    border-radius: 10px;
+    padding: 4px 3px;
+}
+
 #show-password-label{
     display: block;
     color: var(--text-color);
@@ -1295,6 +1301,14 @@ input:checked + .button::before{
 
     .admin-input{
         margin-right: 32px;
+    }
+
+    .email-form{
+        width: 90%;
+    }
+
+    #subject, #message{
+        width: 100%;
     }
 }
 
