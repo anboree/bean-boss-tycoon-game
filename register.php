@@ -29,6 +29,9 @@
         elseif(strlen($username) > 64){
             $errors["username"] = "Please don't enter more than 64 characters for your username!";
         }
+        elseif(!preg_match('/^[\p{L}\p{N}_ ]+$/u', $username)){
+            $errors["username"] = "You can only use letters, numbers and underscore for your username!";
+        }
 
         // Email validation
         if(empty($email)){
@@ -77,88 +80,82 @@
             die("CSRF Token error");
         }
 
-    if(count($errors) == 0){
-        // Checks if username already exists in DB
-        $stmt = $conn->prepare("SELECT id FROM registered_users WHERE username = ?");
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $stmt->store_result();
-
-        if($stmt->num_rows > 0){
-            $errors["username"] = "Username is already registered!";
-        }
-        $stmt->close();
-
-        // Checks if email already exists in DB
-        $stmt = $conn->prepare("SELECT id FROM registered_users WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $stmt->store_result();
-
-        if($stmt->num_rows > 0){
-            $errors["email"] = "Email is already registered!";
-        }
-        $stmt->close();
-
-        // Sends data to DB with SQL Injection security/prevention if no errors
         if(count($errors) == 0){
-           $conn->begin_transaction();
+            // Checks if username already exists in DB
+            $stmt = $conn->prepare("SELECT id FROM registered_users WHERE username = ?");
+            $stmt->bind_param("s", $username);
+            $stmt->execute();
+            $stmt->store_result();
 
-            try{
-                // Insert user
-                $stmt = $conn->prepare("
-                    INSERT INTO registered_users (username, email, password, registration_date)
-                    VALUES (?, ?, ?, ?)
-                ");
-                $stmt->bind_param("ssss", $username, $email, $hashed_password, $registration_date);
-                $stmt->execute();
-
-                // Get the new user's ID
-                $newUserId = $conn->insert_id;
-                $stmt->close();
-
-                // Insert account details
-                $stmt = $conn->prepare("
-                    INSERT INTO user_account_details (user_id)
-                    VALUES (?)
-                ");
-                $stmt->bind_param("i", $newUserId);
-                $stmt->execute();
-                $stmt->close();
-
-                // Insert user preferences
-                $stmt = $conn->prepare("
-                    INSERT INTO user_account_preferences (user_id)
-                    VALUES (?)
-                ");
-                $stmt->bind_param("i", $newUserId);
-                $stmt->execute();
-                $stmt->close();
-
-                // Commit both inserts
-                $conn->commit();
-
-                $_SESSION["id"] = $newUserId;
-
-                // Remove CSRF token after success
-                unset($_SESSION["csrf_token"]);
-
-                header("Location: start_game.php");
-                exit;
-            } 
-            catch(Exception $e){
-                // If anything fails, undo everything
-                $conn->rollback();
-                $errors["database"] = "Registration failed. Please try again.";
+            if($stmt->num_rows > 0){
+                $errors["username"] = "Username is already registered!";
             }
+            $stmt->close();
 
-            // Unsetting the token after each successful registration
-            unset($_SESSION["csrf_token"]);
-            
-            header("Location: start_game.php");
+            // Checks if email already exists in DB
+            $stmt = $conn->prepare("SELECT id FROM registered_users WHERE email = ?");
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $stmt->store_result();
+
+            if($stmt->num_rows > 0){
+                $errors["email"] = "Email is already registered!";
+            }
+            $stmt->close();
+
+            // Sends data to DB with SQL Injection security/prevention if no errors
+            if(count($errors) == 0){
+            $conn->begin_transaction();
+
+                try{
+                    // Insert user
+                    $stmt = $conn->prepare("
+                        INSERT INTO registered_users (username, email, password, registration_date)
+                        VALUES (?, ?, ?, ?)
+                    ");
+                    $stmt->bind_param("ssss", $username, $email, $hashed_password, $registration_date);
+                    $stmt->execute();
+
+                    // Get the new user's ID
+                    $newUserId = $conn->insert_id;
+                    $stmt->close();
+
+                    // Insert account details
+                    $stmt = $conn->prepare("
+                        INSERT INTO user_account_details (user_id)
+                        VALUES (?)
+                    ");
+                    $stmt->bind_param("i", $newUserId);
+                    $stmt->execute();
+                    $stmt->close();
+
+                    // Insert user preferences
+                    $stmt = $conn->prepare("
+                        INSERT INTO user_account_preferences (user_id)
+                        VALUES (?)
+                    ");
+                    $stmt->bind_param("i", $newUserId);
+                    $stmt->execute();
+                    $stmt->close();
+
+                    // Commit both inserts
+                    $conn->commit();
+
+                    $_SESSION["id"] = $newUserId;
+
+                    // Remove CSRF token after success
+                    unset($_SESSION["csrf_token"]);
+
+                    header("Location: start_game.php");
+                    exit;
+                } 
+                catch(Exception $exception){
+                    // If anything fails, undo everything
+                    $conn->rollback();
+                    $errors["database"] = "Registration failed. Please try again.";
+                }
+            }
         }
-    }
-
     }
 ?>
 
@@ -202,8 +199,8 @@
                 <!-- Show password function -->
                 <script>
                     function showPassword(){
-                        var password = document.getElementById("password");
-                        var confirmPassword = document.getElementById("confirm-password");
+                        let password = document.getElementById("password");
+                        let confirmPassword = document.getElementById("confirm-password");
                         if(password.type === "password" && confirmPassword.type === "password"){
                             password.type = "text";
                             confirmPassword.type = "text";
