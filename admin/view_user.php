@@ -7,8 +7,9 @@
         header("Location: ../welcome.php");
     }
 
-    include("../ban_check.php");
+    include("ban_check.php");
     include("admin_check.php");
+    include("start_game_check.php");
 
     // Checks if ID exists
     if(!isset($_GET['id'])){
