@@ -8,6 +8,7 @@
     }
 
     include("ban_check.php");
+    include("start_game_check.php");
 
     // Update last_active column in DB
     $stmt = $conn->prepare("
@@ -17,19 +18,6 @@
     ");
     $stmt->bind_param("i", $_SESSION["id"]);
     $stmt->execute();
-
-    // Checks if start_game has been completed for registered users
-    $stmt = $conn->prepare("
-        SELECT id FROM user_game_progress WHERE user_id = ?
-    ");
-    $stmt->bind_param("i", $_SESSION["id"]);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if($result->num_rows === 0){
-        header("Location: start_game.php");
-        exit();
-    }
 
     include("navbar.php");
 
