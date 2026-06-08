@@ -13,7 +13,7 @@
         $row = $ban_check_result->fetch_assoc();
 
         if($row['is_banned'] !== 0){
-            header("Location: ../bean-boss-tycoon-game/ban_message.php");
+            header("Location: ban_message.php");
         }
     }
     $ban_check->close();
