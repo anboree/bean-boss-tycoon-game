@@ -35,5 +35,5 @@
 \
 **13.** Database is set up!\
 \
-**14.** Type localhost/bean-boss-tycoon-game/ in your web browser, adjust if you have put it in another folder inside htdocs\
+**14.** Type localhost/bean-boss-tycoon-game-main/ in your web browser, adjust if you have put it in another folder inside htdocs\
 **15.** Website should be open and fully working!
